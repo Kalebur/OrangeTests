@@ -74,24 +74,23 @@ namespace OrangeTests
             MonthButtons.Where(button => button.Text == monthsAsStrings[month]).First().Click();
         }
 
-        private void SelectYear(int year, int currentYear)
+        private void SelectYear(int targetYear, int currentYear)
         {
-            if (year != currentYear)
+            if (targetYear != currentYear)
             {
                 CalendarTitleButton.Click();
                 CalendarTitleButton.Click();
-                var yearDifference = Math.Abs(currentYear - year);
                 (int minYear, int maxYear) = GetYearRange();
 
-                if (YearWithinRange(minYear, maxYear, year))
+                if (YearWithinRange(minYear, maxYear, targetYear))
                 {
-                    YearButtons.Where(button => button.Text == year.ToString()).First().Click();
+                    YearButtons.Where(button => button.Text == targetYear.ToString()).First().Click();
                 }
                 else
                 {
-                    while (!YearWithinRange(minYear, maxYear, year))
+                    while (!YearWithinRange(minYear, maxYear, targetYear))
                     {
-                        if (year > currentYear)
+                        if (targetYear > currentYear)
                         {
                             CalendarNextButton.Click();
                         }
@@ -103,7 +102,7 @@ namespace OrangeTests
                         (minYear, maxYear) = GetYearRange();
                     }
 
-                    YearButtons.Where(button => button.Text == year.ToString()).First().Click();
+                    YearButtons.Where(button => button.Text == targetYear.ToString()).First().Click();
                 }
             }
         }
