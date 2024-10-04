@@ -23,7 +23,8 @@ namespace OrangeTests
         //[TestCase("8/15/2082")]
         //[TestCase("5/23/2003")]
         //[TestCase("10/27/2016")]
-        [TestCase("3/15/1492")]
+        //[TestCase("3/15/1492")]
+        [TestCase("10/31/5284")]
         public void SelectDate(string date)
         {
             _driver.Navigate().GoToUrl(_datePickerPage.Url);
