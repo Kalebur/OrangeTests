@@ -44,6 +44,17 @@ namespace OrangeTests
             Assert.That(_driver.Url, Is.EqualTo(_loginPage.Url));
         }
 
+        [Test]
+        public void InvalidLoginCredentials_FailsToLogin_AndProducesCorrectError()
+        {
+            _loginHelpers.LoginAs("default_user");
+            _globalHelpers.Wait.Until(_driver => _loginPage.ErrorMessage.Displayed);
+
+            Assert.That(_driver.Url, Is.EqualTo(_loginPage.Url));
+            Assert.That(_loginPage.ErrorMessage.Displayed);
+            Assert.That(_loginPage.ErrorMessage.Text, Is.EqualTo(_loginPage.InvalidCredentialsErrorText));
+        }
+
         [TearDown]
         public void TearDown()
         {
