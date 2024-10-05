@@ -34,10 +34,10 @@ namespace OrangeHRMTests.Helpers
             _driver.Navigate().GoToUrl(_loginPage.Url);
             _wait.Until(_driver => _loginPage.UsernameTextBox.Displayed);
 
-            if (_users.ContainsKey(user))
+            if (_users.TryGetValue(user, out (string userName, string Password) value))
             {
-                userName = _users[user].userName;
-                password = _users[user].Password;
+                userName = value.userName;
+                password = value.Password;
             }
             else
             {

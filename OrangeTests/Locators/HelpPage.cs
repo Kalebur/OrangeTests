@@ -2,14 +2,9 @@
 
 namespace OrangeHRMTests.Locators
 {
-    public class HelpPage
+    public class HelpPage(IWebDriver driver)
     {
-        private readonly IWebDriver _driver;
-
-        public HelpPage(IWebDriver driver)
-        {
-            _driver = driver;
-        }
+        private readonly IWebDriver _driver = driver;
 
         public string Url => "https://starterhelp.orangehrm.com/hc/en-us";
         public IWebElement AdminUserGuideLink => _driver.FindElement(By.XPath("//a[contains(@href, '/hc/en-us/categories/360002945799-Admin-User-Guide')]"));

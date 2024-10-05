@@ -3,9 +3,9 @@ using OpenQA.Selenium.Support.UI;
 
 namespace OrangeHRMTests
 {
-    public class DatePickerPage
+    public class DatePickerPage(IWebDriver driver)
     {
-        private readonly IWebDriver _driver;
+        private readonly IWebDriver _driver = driver;
         private readonly Dictionary<int, string> monthsAsStrings = new()
             {
                 { 1, "Jan" },
@@ -21,12 +21,6 @@ namespace OrangeHRMTests
                 { 11, "Nov" },
                 { 12, "Dec" },
             };
-
-        public DatePickerPage(IWebDriver driver)
-        {
-            _driver = driver;
-        }
-
         public string Url = "https://air-datepicker.com/";
 
         public IWebElement Logo => _driver.FindElement(By.XPath("//h2[@class='logo']"));
@@ -107,7 +101,7 @@ namespace OrangeHRMTests
             }
         }
 
-        private bool YearWithinRange(int minYear, int maxYear, int currentYear)
+        private static bool YearWithinRange(int minYear, int maxYear, int currentYear)
         {
             return currentYear >= minYear && currentYear <= maxYear;
         }

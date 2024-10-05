@@ -30,16 +30,19 @@ namespace OrangeHRMTests
             _globalHelpers.Wait.Until(_driver => _globalLocators.HelpButton.Displayed);
             _globalLocators.HelpButton.Click();
 
-            Assert.That(_driver.WindowHandles.Count, Is.EqualTo(2));
+            Assert.That(_driver.WindowHandles, Has.Count.EqualTo(2));
             _driver.SwitchTo().Window(_driver.WindowHandles[1]);
             Assert.That(_driver.CurrentWindowHandle, Is.EqualTo(_driver.WindowHandles[1]));
             _globalHelpers.Wait.Until(_driver => _helpPage.KnowledgeBaseSection.Displayed);
 
-            Assert.That(_helpPage.AdminUserGuideLink.Displayed, Is.True);
-            Assert.That(_helpPage.EmployeeUserGuideLink.Displayed, Is.True);
-            Assert.That(_helpPage.MobileAppLink.Displayed, Is.True);
-            Assert.That(_helpPage.AWSGuideLink.Displayed, Is.True);
-            Assert.That(_helpPage.FAQsLink.Displayed, Is.True);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_helpPage.AdminUserGuideLink.Displayed, Is.True);
+                Assert.That(_helpPage.EmployeeUserGuideLink.Displayed, Is.True);
+                Assert.That(_helpPage.MobileAppLink.Displayed, Is.True);
+                Assert.That(_helpPage.AWSGuideLink.Displayed, Is.True);
+                Assert.That(_helpPage.FAQsLink.Displayed, Is.True);
+            });
         }
 
         [TearDown]

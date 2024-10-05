@@ -11,11 +11,7 @@ namespace OrangeHRMTests
         {
             if (_cachedDriver is null)
             {
-                var elementDriver = element.GetType().GetProperty("WrappedDriver")?.GetValue(element);
-                if (elementDriver is null)
-                {
-                    throw new Exception($"{nameof(element)} does not have a web driver.");
-                }
+                var elementDriver = (element.GetType().GetProperty("WrappedDriver")?.GetValue(element)) ?? throw new Exception($"{nameof(element)} does not have a web driver.");
                 _cachedDriver = elementDriver as IWebDriver;
             }
 

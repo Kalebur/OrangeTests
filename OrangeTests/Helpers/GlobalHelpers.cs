@@ -3,15 +3,10 @@ using OpenQA.Selenium.Support.UI;
 
 namespace OrangeHRMTests.Helpers
 {
-    public class GlobalHelpers
+    public class GlobalHelpers(IWebDriver driver)
     {
-        private readonly IWebDriver _driver;
+        private readonly IWebDriver _driver = driver;
 
-        public GlobalHelpers(IWebDriver driver)
-        {
-            _driver = driver;
-        }
-
-        public WebDriverWait Wait => new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+        public WebDriverWait Wait => new(_driver, TimeSpan.FromSeconds(10));
     }
 }

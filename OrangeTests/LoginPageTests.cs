@@ -46,9 +46,12 @@ namespace OrangeHRMTests
             _loginHelpers.LoginAs("default_user");
             _globalHelpers.Wait.Until(_driver => _loginPage.ErrorMessage.Displayed);
 
-            Assert.That(_driver.Url, Is.EqualTo(_loginPage.Url));
-            Assert.That(_loginPage.ErrorMessage.Displayed);
-            Assert.That(_loginPage.ErrorMessage.Text, Is.EqualTo(_loginPage.InvalidCredentialsErrorText));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_driver.Url, Is.EqualTo(_loginPage.Url));
+                Assert.That(_loginPage.ErrorMessage.Displayed);
+                Assert.That(_loginPage.ErrorMessage.Text, Is.EqualTo(_loginPage.InvalidCredentialsErrorText));
+            });
         }
 
         [TearDown]

@@ -2,14 +2,9 @@
 
 namespace OrangeHRMTests.Locators
 {
-    public class GlobalLocators
+    public class GlobalLocators(IWebDriver driver)
     {
-        private readonly IWebDriver _driver;
-
-        public GlobalLocators(IWebDriver driver)
-        {
-            _driver = driver;
-        }
+        private readonly IWebDriver _driver = driver;
 
         public IWebElement UserDropdown => _driver.FindElement(By.XPath("//li[@class='oxd-userdropdown']"));
         public IWebElement UserDropdownMenu => _driver.FindElement(By.XPath("//ul[@class='oxd-dropdown-menu']"));
