@@ -1,7 +1,7 @@
 using OpenQA.Selenium;
 using System.Reflection;
 
-namespace OrangeHRMTests
+namespace OrangeHRMTests.Extensions
 {
     public static class IWebElementExtensions
     {
