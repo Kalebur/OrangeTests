@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OrangeHRMTests.Locators;
 using System.Text.RegularExpressions;
 
 namespace OrangeHRMTests.Helpers
@@ -6,10 +7,14 @@ namespace OrangeHRMTests.Helpers
     public class AdminHelpers
     {
         private readonly IWebDriver _driver;
+        private readonly AdminPage _adminPage;
+        private readonly GlobalHelpers _globalHelpers;
 
-        public AdminHelpers(IWebDriver driver)
+        public AdminHelpers(IWebDriver driver, AdminPage adminPage, GlobalHelpers globalHelpers)
         {
             _driver = driver;
+            _adminPage = adminPage;
+            _globalHelpers = globalHelpers;
         }
 
         public IWebElement GetDeleteUserButton(IWebElement UserRow)
