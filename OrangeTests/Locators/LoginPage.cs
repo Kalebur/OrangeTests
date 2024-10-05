@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 
-namespace OrangeTests.Locators
+namespace OrangeHRMTests.Locators
 {
     public class LoginPage
     {

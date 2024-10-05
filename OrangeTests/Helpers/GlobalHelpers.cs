@@ -1,7 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
-namespace OrangeTests.Helpers
+namespace OrangeHRMTests.Helpers
 {
     public class GlobalHelpers
     {

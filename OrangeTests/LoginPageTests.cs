@@ -1,10 +1,9 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
-using OrangeTests.Helpers;
-using OrangeTests.Locators;
+using OrangeHRMTests.Helpers;
+using OrangeHRMTests.Locators;
 
-namespace OrangeTests
+namespace OrangeHRMTests
 {
     public class LoginPageTests
     {
@@ -19,9 +18,9 @@ namespace OrangeTests
         {
             _driver = new ChromeDriver();
             _loginPage = new LoginPage(_driver);
-            _loginHelpers = new LoginHelpers(_driver, _loginPage);
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver);
+            _loginHelpers = new LoginHelpers(_driver, _loginPage, _globalHelpers, _globalLocators);
         }
 
         [Test]
@@ -36,10 +35,7 @@ namespace OrangeTests
         public void CanLogout()
         {
             _loginHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(_driver => _globalLocators.UserDropdown.Displayed);
-            _globalLocators.UserDropdown.Click();
-            _globalHelpers.Wait.Until(_driver => _globalLocators.UserDropdownMenu.Displayed);
-            _globalLocators.LogoutButton.Click();
+            _loginHelpers.Logout();
 
             Assert.That(_driver.Url, Is.EqualTo(_loginPage.Url));
         }
