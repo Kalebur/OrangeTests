@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Locators;
+using OrangeHRMTests.Models;
 
 namespace OrangeHRMTests
 {
@@ -34,18 +35,39 @@ namespace OrangeHRMTests
             _globalLocators.AdminLink.Click();
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
             Assert.That(_driver.Url, Is.EqualTo(_adminPage.Url));
+            _adminHelpers.SearchForUserByUsername("DingleChingle");
+            Assert.That(_adminHelpers
+                .GetRecordCount(), Is.EqualTo(0) | Is.EqualTo(1));
+        }
 
-            if (!_globalHelpers.IsElementPresentOnPage(_adminPage.UsernameTextBox))
+        [Test]
+        public void CanEditUser()
+        {
+            _loginHelpers.LoginAs("admin");
+            _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
+            _globalLocators.AdminLink.ClickViaJavaScript();
+            _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+            Assert.That(_driver.Url, Is.EqualTo(_adminPage.Url));
+
+            var username = _adminHelpers.GetTestUsername();
+            _adminHelpers.SearchForUserByUsername(username);
+            Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
+
+            var currentUserData = _adminHelpers.ParseUserTableRow(_adminPage.Users.First());
+            var newUserData = _adminHelpers.GenerateRandomUser();
+            _adminHelpers.EditUser(newUserData);
+            _adminHelpers.SearchForUserByUsername(newUserData.Username);
+            Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
+
+            var updatedUserData = _adminHelpers.ParseUserTableRow(_adminPage.Users.First());
+            Assert.Multiple(() =>
             {
-                _adminPage.SystemUsersDisplayToggleButton.Click();
-            }
-
-            _globalHelpers.Wait.Until(d => _adminPage.UsernameTextBox.Displayed);
-            _adminPage.UsernameTextBox.SendKeys("admin");
-            _adminPage.SearchButton.Click();
-            _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
-
-            Assert.That(_adminHelpers.GetRecordCount(_adminPage.RecordCountSpan.Text), Is.EqualTo(0) | Is.EqualTo(1));
+                Assert.That(updatedUserData.Username, Is.EqualTo(newUserData.Username));
+                Assert.That(updatedUserData.Employee.FirstName, Is.EqualTo(newUserData.Employee.FirstName));
+                Assert.That(updatedUserData.Employee.LastName, Is.EqualTo(newUserData.Employee.LastName));
+                Assert.That(updatedUserData.UserRole, Is.EqualTo(newUserData.UserRole));
+                Assert.That(updatedUserData.IsEnabled, Is.EqualTo(newUserData.IsEnabled));
+            });
         }
 
         [TearDown]

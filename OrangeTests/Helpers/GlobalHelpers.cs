@@ -1,11 +1,14 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using OrangeHRMTests.Locators;
 
 namespace OrangeHRMTests.Helpers
 {
     public class GlobalHelpers(IWebDriver driver)
     {
         private readonly IWebDriver _driver = driver;
+        private readonly Actions _actions = new Actions(driver);
 
         public WebDriverWait Wait => new(_driver, TimeSpan.FromSeconds(10));
 
@@ -22,6 +25,20 @@ namespace OrangeHRMTests.Helpers
 
             return false;
         }
+
+        public void ClickViaActions(IWebElement element)
+        {
+            _actions.ScrollToElement(element);
+            _actions.Click();
+        }
+
+        public Int64 GetWindowWidth()
+        {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)_driver;
+            var width = (Int64)js.ExecuteScript("return document.documentElement.clientWidth;");
+            return width;
+        }
+
     }
 
 }
