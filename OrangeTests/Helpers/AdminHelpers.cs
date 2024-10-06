@@ -66,12 +66,9 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.Wait.Until(d => _adminPage.EditEmployeeNameTextBox.Displayed);
 
             SelectUserRole(newUser.UserRole.ToString());
-            _adminPage.EditEmployeeNameTextBox.ClearViaSendKeys();
-            _adminPage.EditEmployeeNameTextBox.SendKeys("a");
-            _globalHelpers.Wait.Until(d => _adminPage.FirstAutoCompleteName.Displayed);
-            var dropdownSelection = _adminPage.EmployeeNames.GetRandomItem(_random);
-            SetEmployeeNameFromField(newUser.Employee, dropdownSelection);
-            dropdownSelection.Click();
+            var nameField = GetEmployeeNameElement();
+            SetEmployeeNameFromField(newUser.Employee, nameField);
+            nameField.Click();
             SelectUserStatus(newUser.IsEnabled);
             _adminPage.UsernameTextBox.ClearViaSendKeys();
             _adminPage.UsernameTextBox.SendKeys(newUser.Username);
@@ -84,14 +81,22 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
         }
 
-        private void SelectUserStatus(bool isEnabled)
+        public IWebElement GetEmployeeNameElement()
+        {
+            _adminPage.EditEmployeeNameTextBox.ClearViaSendKeys();
+            _adminPage.EditEmployeeNameTextBox.SendKeys("a");
+            _globalHelpers.Wait.Until(d => _adminPage.FirstAutoCompleteName.Displayed);
+            return _adminPage.EmployeeNames.GetRandomItem(_random);
+        }
+
+        public void SelectUserStatus(bool isEnabled)
         {
             _adminPage.StatusDropdown.Click();
             _globalHelpers.Wait.Until(d => _adminPage.StatusDropdownOptions.First().Displayed);
             _adminPage.StatusDropdownOptions.SelectItemByText(isEnabled ? "Enabled" : "Disabled");
         }
 
-        private void SelectUserRole(string roleText)
+        public void SelectUserRole(string roleText)
         {
             _adminPage.UserRoleDropdown.Click();
             _globalHelpers.Wait.Until(d => _adminPage.UserRoleDropdownOptions.First().Displayed);
@@ -208,7 +213,7 @@ namespace OrangeHRMTests.Helpers
             return usernames;
         }
 
-        private void SetEmployeeNameFromField(Employee newEmployee, IWebElement nameField)
+        public void SetEmployeeNameFromField(Employee newEmployee, IWebElement nameField)
         {
             var nameParts = nameField.Text.Split(' ');
             newEmployee.FirstName = nameParts.First();

@@ -28,24 +28,33 @@ namespace OrangeHRMTests.Helpers
 
         public void LoginAs(string user)
         {
-            string userName = string.Empty;
+            string username = string.Empty;
             string password = string.Empty;
 
             _driver.Navigate().GoToUrl(_loginPage.Url);
             _wait.Until(_driver => _loginPage.UsernameTextBox.Displayed);
 
-            if (_users.TryGetValue(user, out (string userName, string Password) value))
+            if (_users.TryGetValue(user, out (string username, string Password) value))
             {
-                userName = value.userName;
+                username = value.username;
                 password = value.Password;
             }
             else
             {
-                userName = "InvalidUser";
+                username = "InvalidUser";
                 password = "IncorrectPassword";
             }
 
-            _loginPage.UsernameTextBox.SendKeys(userName);
+            _loginPage.UsernameTextBox.SendKeys(username);
+            _loginPage.PasswordTextBox.SendKeys(password);
+            _loginPage.LoginButton.Click();
+        }
+
+        public void LoginWithCredentials(string username, string password)
+        {
+            _driver.Navigate().GoToUrl(_loginPage.Url);
+            _wait.Until(_driver => _loginPage.UsernameTextBox.Displayed);
+            _loginPage.UsernameTextBox.SendKeys(username);
             _loginPage.PasswordTextBox.SendKeys(password);
             _loginPage.LoginButton.Click();
         }
@@ -56,6 +65,7 @@ namespace OrangeHRMTests.Helpers
             _globalLocators.UserDropdown.Click();
             _globalHelpers.Wait.Until(_driver => _globalLocators.UserDropdownMenu.Displayed);
             _globalLocators.LogoutButton.Click();
+            _wait.Until(_driver => _loginPage.UsernameTextBox.Displayed);
         }
     }
 }
