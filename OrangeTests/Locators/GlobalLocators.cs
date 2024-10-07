@@ -7,6 +7,7 @@ namespace OrangeHRMTests.Locators
         private readonly IWebDriver _driver = driver;
 
         public IWebElement UserDropdown => _driver.FindElement(By.XPath("//li[@class='oxd-userdropdown']"));
+        public IWebElement UserName => _driver.FindElement(By.XPath("//p[contains(@class, 'oxd-userdropdown-name')]"));
         public IWebElement UserDropdownMenu => _driver.FindElement(By.XPath("//ul[@class='oxd-dropdown-menu']"));
         public IWebElement LogoutButton => UserDropdownMenu.FindElement(By.XPath("//a[contains(text(), 'Logout')]"));
         public IWebElement AdminLink => _driver.FindElement(By.XPath("//a[contains(@href, '/admin/viewAdminModule')]"));

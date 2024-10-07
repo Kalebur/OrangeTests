@@ -38,6 +38,7 @@ namespace OrangeHRMTests.Locators
         public IWebElement ResponsiveUserStatus => _driver.FindElement(By.XPath("//div[contains(text(), 'Status')]//following-sibling::div"));
         public IList<IWebElement> EmployeeNames => EmployeeAutoCompleteDropdown.FindElements(By.XPath("//div[contains(@class, 'autocomplete-option')]/span"));
         public IWebElement FirstAutoCompleteName => _driver.FindElement(By.XPath("//div[contains(@class, 'autocomplete-option')]/span"));
+        public IWebElement ModalDeleteButton => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-modal-footer')]//button//i//parent::button"));
 
 
 

@@ -45,7 +45,7 @@ namespace OrangeHRMTests
         {
             _loginHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
-            _globalLocators.AdminLink.ClickViaJavaScript();
+            _globalLocators.AdminLink.Click();
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
             Assert.That(_driver.Url, Is.EqualTo(_adminPage.Url));
 
@@ -68,6 +68,14 @@ namespace OrangeHRMTests
                 Assert.That(updatedUserData.UserRole, Is.EqualTo(newUserData.UserRole));
                 Assert.That(updatedUserData.IsEnabled, Is.EqualTo(newUserData.IsEnabled));
             });
+
+            _adminHelpers.GetDeleteUserButton(_adminPage.Users.First()).Click();
+            _globalHelpers.Wait.Until(d => _adminPage.ModalDeleteButton.Displayed);
+            _adminPage.ModalDeleteButton.Click();
+            _adminPage.UsernameTextBox.SendKeys(updatedUserData.Username);
+            _adminPage.SearchButton.Click();
+            _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
+            Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(0));
         }
 
         [Test]
@@ -97,6 +105,37 @@ namespace OrangeHRMTests
             _loginHelpers.LoginWithCredentials(newUser.Username, newUser.Password);
             _globalHelpers.Wait.Until(_driver => _globalLocators.UserDropdown.Displayed);
             Assert.That(_driver.Url, Is.EqualTo("https://opensource-demo.orangehrmlive.com/dashboard/index"));
+            Assert.That(_globalLocators.UserName.Text,
+                Is.EqualTo(newUser.Employee.FirstName + " " + newUser.Employee.LastName));
+        }
+
+        [Test]
+        public void CanDeleteUser()
+        {
+            _loginHelpers.LoginAs("admin");
+            _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
+            _globalLocators.AdminLink.Click();
+            _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+            Assert.That(_driver.Url, Is.EqualTo(_adminPage.Url));
+
+            string username;
+            do
+            {
+                username = _adminHelpers.GetTestUsername();
+            } while (username == "Admin");
+
+            _adminHelpers.SearchForUserByUsername(username);
+            Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
+
+            _adminHelpers.GetDeleteUserButton(_adminPage.Users.First()).Click();
+            _globalHelpers.Wait.Until(d => _adminPage.ModalDeleteButton.Displayed);
+            _adminPage.ModalDeleteButton.Click();
+
+            _adminHelpers.SearchForUserByUsername(username);
+            _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
+            Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(0));
+
+
         }
 
         [TearDown]
