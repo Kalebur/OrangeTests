@@ -6,7 +6,7 @@ namespace OrangeHRMTests.Locators
     {
         private readonly IWebDriver _driver = driver;
 
-        public string Url => "https://opensource-demo.orangehrmlive.com/auth/login";
+        public string Url => "https://opensource-demo.orangehrmlive.com/";
         public string InvalidCredentialsErrorText => "Invalid credentials";
         public IWebElement UsernameTextBox => _driver.FindElement(By.XPath("//input[@name='username']"));
         public IWebElement PasswordTextBox => _driver.FindElement(By.XPath("//input[@type='password']"));

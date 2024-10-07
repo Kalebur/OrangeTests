@@ -11,7 +11,7 @@ namespace OrangeHRMTests.Locators
             _driver = driver;
         }
 
-        public string Url => "https://opensource-demo.orangehrmlive.com/admin/viewSystemUsers";
+        public string Url => "https://opensource-demo.orangehrmlive.com/web/index.php/admin/viewSystemUsers";
 
         public IWebElement SystemUsersDisplayToggleButton => _driver.FindElement(By.XPath("//div[contains(@class, 'oxd-table-filter-header-options')]//button"));
         public IWebElement UsernameTextBox => _driver.FindElement(By.XPath("//div[contains(@class, 'oxd-input-group__label-wrapper')]//label[contains(text(), 'Username')]//parent::div//following-sibling::div//input"));

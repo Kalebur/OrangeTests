@@ -19,7 +19,7 @@ namespace OrangeHRMTests
             _driver = new ChromeDriver();
             _loginPage = new LoginPage(_driver);
             _globalLocators = new GlobalLocators(_driver);
-            _globalHelpers = new GlobalHelpers(_driver);
+            _globalHelpers = new GlobalHelpers(_driver, new Random());
             _loginHelpers = new LoginHelpers(_driver, _loginPage, _globalHelpers, _globalLocators);
         }
 
@@ -27,17 +27,21 @@ namespace OrangeHRMTests
         public void CanLogin()
         {
             _loginHelpers.LoginAs("admin");
-
-            Assert.That(_driver.Url, Is.EqualTo("https://opensource-demo.orangehrmlive.com/dashboard/index"));
+            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
+            Assert.That(_globalLocators.UserDropdown.Displayed, Is.True);
+            Assert.That(_globalLocators.DashboardLink.GetAttribute("class").Contains("active"), Is.True);
         }
 
         [Test]
         public void CanLogout()
         {
             _loginHelpers.LoginAs("admin");
+            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
             _loginHelpers.Logout();
 
-            Assert.That(_driver.Url, Is.EqualTo(_loginPage.Url));
+            Assert.That(_loginPage.UsernameTextBox.Displayed, Is.True);
+            Assert.That(_loginPage.PasswordTextBox.Displayed, Is.True);
+            Assert.That(_loginPage.LoginButton.Displayed, Is.True);
         }
 
         [Test]
@@ -48,8 +52,8 @@ namespace OrangeHRMTests
 
             Assert.Multiple(() =>
             {
-                Assert.That(_driver.Url, Is.EqualTo(_loginPage.Url));
-                Assert.That(_loginPage.ErrorMessage.Displayed);
+                Assert.That(_loginPage.UsernameTextBox.Displayed, Is.True);
+                Assert.That(_loginPage.ErrorMessage.Displayed, Is.True);
                 Assert.That(_loginPage.ErrorMessage.Text, Is.EqualTo(_loginPage.InvalidCredentialsErrorText));
             });
         }

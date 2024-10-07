@@ -14,12 +14,12 @@ namespace OrangeHRMTests.Helpers
         private readonly GlobalHelpers _globalHelpers;
         private readonly Random _random;
 
-        public AdminHelpers(IWebDriver driver, AdminPage adminPage, GlobalHelpers globalHelpers)
+        public AdminHelpers(IWebDriver driver, AdminPage adminPage, GlobalHelpers globalHelpers, Random random)
         {
             _driver = driver;
             _adminPage = adminPage;
             _globalHelpers = globalHelpers;
-            _random = new Random();
+            _random = random;
         }
 
         public IWebElement GetDeleteUserButton(IWebElement userRow)
@@ -103,61 +103,7 @@ namespace OrangeHRMTests.Helpers
             _adminPage.UserRoleDropdownOptions.SelectItemByText(roleText);
         }
 
-        public User GenerateRandomUser()
-        {
-            var user = new User();
-            user.Username = GetRandomUsername();
-            user.Password = GetRandomPassword();
-            user.UserRole = GetRandomUserRole();
-            user.Employee = new Employee();
-            user.IsEnabled = _random.Next(1, 101) > 50 ? true : false;
-
-            return user;
-        }
-
-        private UserRole GetRandomUserRole()
-        {
-            var allRoles = Enum.GetValues(typeof(UserRole));
-            return (UserRole)allRoles.GetValue(_random.Next(allRoles.Length))!;
-        }
-
-        public string GetRandomUsername()
-        {
-            var usernames = new List<string>()
-            {
-                "DingleChingle",
-                "mary.manchino",
-                "fbaggins",
-                "DarthJarJar",
-                "rick.deckard",
-            };
-
-            var username = usernames[_random.Next(usernames.Count)];
-            for (int i = 0; i < _random.Next(1, 5); i++)
-            {
-                username += _random.Next(1, 1000).ToString();
-            }
-            return username;
-        }
-
-        public string GetRandomPassword()
-        {
-            var passwords = new List<string>()
-            {
-                "FBcFICmH5",
-                "6lvnXozQ",
-                "5zp1tzjcBh",
-                "8bY2tiHFA",
-                "gZ7h7kuSVCHe",
-                "u9mNOiVlQ",
-                "xDPyIpT4FAL",
-                "rymu9gaqoY",
-                "eO5FtEztG",
-                "WhuBog5rY",
-            };
-
-            return passwords[_random.Next(passwords.Count)];
-        }
+        
 
         public User ParseUserTableRow(IWebElement tableRow)
         {
