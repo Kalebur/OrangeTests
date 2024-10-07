@@ -19,6 +19,8 @@ namespace OrangeHRMTests.Locators
         public IWebElement FileInput => _driver.FindElement(By.XPath("//input[@type='file']"));
         public IWebElement AddAttachmentButton => _driver.FindElement(By.XPath("//button//i[contains(@class, 'bi-plus')]//parent::button"));
         public IList<IWebElement> Attachments => _driver.FindElements(By.XPath("//div[contains(@class, 'oxd-table-body')]/child::div[contains(@class, 'oxd-table-card')]"));
+        public IWebElement SuccessAlert => _driver.FindElement(By.XPath("//p[text()='Successfully Updated']"));
+
 
     }
 }
