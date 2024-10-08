@@ -2,14 +2,9 @@
 
 namespace OrangeHRMTests.Locators
 {
-    public class MyInfoPage
+    public class MyInfoPage(IWebDriver driver)
     {
-        private readonly IWebDriver _driver;
-
-        public MyInfoPage(IWebDriver driver)
-        {
-            _driver = driver;
-        }
+        private readonly IWebDriver _driver = driver;
 
         public IWebElement PersonalDetailsTabButton => _driver.FindElement(By.XPath("//div[@role='tab']//a[contains(text(), 'Personal Details')]"));
         public IWebElement FirstNameTextBox => _driver.FindElement(By.XPath("//input[contains(@class, 'orangehrm-firstname')]"));
@@ -22,7 +17,7 @@ namespace OrangeHRMTests.Locators
         public IWebElement AddAttachmentButton => _driver.FindElement(By.XPath("//button//i[contains(@class, 'bi-plus')]//parent::button"));
         public IList<IWebElement> Attachments => _driver.FindElements(By.XPath("//div[contains(@class, 'oxd-table-body')]/child::div[contains(@class, 'oxd-table-card')]"));
         public IWebElement SaveAttachmentButton => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-attachment')]//button[@type='submit']"));
-        public IWebElement ResponsiveAttachmentFilename => _driver.FindElement(By.XPath("//div[contains(@class, 'card-item card-header-slot-content --left')]//div[contains(@class, 'data')]"));
+        public IWebElement ResponsiveAttachmentFilename(IWebElement element) => element.FindElement(By.XPath(".//div[contains(@class, 'card-item card-header-slot-content --left')]//div[contains(@class, 'data')]"));
 
 
     }

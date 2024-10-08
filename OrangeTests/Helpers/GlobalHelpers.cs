@@ -48,13 +48,15 @@ namespace OrangeHRMTests.Helpers
 
         public User GenerateRandomUser()
         {
-            var user = new User();
-            user.Username = GetRandomUsername();
-            user.Password = GetRandomPassword();
-            user.UserRole = GetRandomUserRole();
-            user.Employee = new Employee();
+            var user = new User
+            {
+                Username = GetRandomUsername(),
+                Password = GetRandomPassword(),
+                UserRole = GetRandomUserRole(),
+                Employee = new Employee()
+            };
             AssignRandomName(user);
-            user.IsEnabled = _random.Next(1, 101) > 50 ? true : false;
+            user.IsEnabled = _random.Next(1, 101) > 50;
 
             return user;
         }
@@ -86,8 +88,8 @@ namespace OrangeHRMTests.Helpers
 
         private void AssignRandomName(User user)
         {
-            List<string> names = new()
-            {
+            List<string> names =
+            [
                 "Jane",
                 "Susan",
                 "Essence",
@@ -99,10 +101,10 @@ namespace OrangeHRMTests.Helpers
                 "Hiro",
                 "Freddy",
                 "Marie",
-            };
+            ];
 
-            List<string> surnames = new()
-            {
+            List<string> surnames =
+            [
                 "Woods",
                 "Nakamura",
                 "Blackwell",
@@ -111,7 +113,7 @@ namespace OrangeHRMTests.Helpers
                 "Zhang",
                 "Yen",
                 "Sun",
-            };
+            ];
 
             user.Employee.FirstName = names[_random.Next(names.Count)];
             user.Employee.LastName = surnames[_random.Next(surnames.Count)];

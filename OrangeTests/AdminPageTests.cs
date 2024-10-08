@@ -19,7 +19,7 @@ namespace OrangeHRMTests
         [SetUp]
         public void Setup()
         {
-            Random random = new Random(Guid.NewGuid().GetHashCode());
+            Random random = new();
             _driver = new ChromeDriver();
             _globalHelpers = new GlobalHelpers(_driver, random);
             _globalLocators = new GlobalLocators(_driver);
@@ -106,9 +106,12 @@ namespace OrangeHRMTests
             _loginHelpers.Logout();
             _loginHelpers.LoginWithCredentials(newUser.Username, newUser.Password);
             _globalHelpers.Wait.Until(_driver => _globalLocators.UserDropdown.Displayed);
-            Assert.That(_globalLocators.DashboardLink.GetAttribute("class"), Does.Contain("active"));
-            Assert.That(_globalLocators.UserName.Text,
-                Is.EqualTo(newUser.Employee.FirstName + " " + newUser.Employee.LastName));
+            Assert.Multiple(() =>
+            {
+                Assert.That(_globalLocators.DashboardLink.GetAttribute("class"), Does.Contain("active"));
+                Assert.That(_globalLocators.UserName.Text,
+                    Is.EqualTo(newUser.Employee.FirstName + " " + newUser.Employee.LastName));
+            });
         }
 
         [Test]

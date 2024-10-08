@@ -6,7 +6,7 @@ namespace OrangeHRMTests.Extensions
 {
     public static class IWebElementExtensions
     {
-        private static IWebDriver? _cachedDriver = null;
+        private static IWebDriver _cachedDriver = null;
 
         public static void ClickViaJavaScript(this IWebElement element)
         {

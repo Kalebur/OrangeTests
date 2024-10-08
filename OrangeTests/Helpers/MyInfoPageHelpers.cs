@@ -3,20 +3,13 @@ using OrangeHRMTests.Locators;
 
 namespace OrangeHRMTests.Helpers
 {
-    public class MyInfoPageHelpers
+    public class MyInfoPageHelpers(IWebDriver driver, MyInfoPage myInfoPage, GlobalHelpers globalHelpers)
     {
-        private readonly IWebDriver _driver;
-        private readonly MyInfoPage _myInfoPage;
-        private readonly GlobalHelpers _globalHelpers;
+        private readonly IWebDriver _driver = driver;
+        private readonly MyInfoPage _myInfoPage = myInfoPage;
+        private readonly GlobalHelpers _globalHelpers = globalHelpers;
 
-        public MyInfoPageHelpers(IWebDriver driver, MyInfoPage myInfoPage, GlobalHelpers globalHelpers)
-        {
-            _driver = driver;
-            _myInfoPage = myInfoPage;
-            _globalHelpers = globalHelpers;
-        }
-
-        public (IWebElement attachment, Dictionary<string, string>?) GetAttachedFileData(string fileName)
+        public (IWebElement attachment, Dictionary<string, string>) GetAttachedFileData(string fileName)
         {
             Dictionary<string, string> attachmentData = null;
             IWebElement attachmentCard = null;
@@ -41,7 +34,7 @@ namespace OrangeHRMTests.Helpers
             var attachmentData = new Dictionary<string, string>();
             if (_globalHelpers.GetWindowWidth() < 1000)
             {
-                attachmentData.Add("fileName", _myInfoPage.ResponsiveAttachmentFilename.Text);
+                attachmentData.Add("fileName", _myInfoPage.ResponsiveAttachmentFilename(tableRow).Text.Trim());
                 var dataFields = tableRow.FindElements(By.XPath(".//div[contains(@class, 'card-body-slot')]//div[@role='cell']//div[contains(@class, 'data')]"));
                 if (dataFields.Count == 5)
                 {

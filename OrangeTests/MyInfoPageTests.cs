@@ -69,13 +69,19 @@ namespace OrangeHRMTests
 
             _globalHelpers.ClickViaActions(_myInfoPage.AddAttachmentButton);
             Assert.That(_myInfoPage.FilenameDiv.Displayed, Is.True);
-            _myInfoPage.FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename));
+            _myInfoPage.FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", filename));
             _globalHelpers.ClickViaActions(_myInfoPage.SaveAttachmentButton);
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
             (attachmentCard, attachmentData) = _myInfoPageHelpers.GetAttachedFileData(filename);
-            Assert.That(attachmentData, Is.Not.Null);
-            Assert.That(attachmentCard, Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(attachmentData, Is.Not.Null, "No attachment data was parsed.");
+                Assert.That(attachmentCard, Is.Not.Null);
+                Assert.That(attachmentData["addedBy"], Is.EqualTo("Admin"));
+                Assert.That(attachmentData["type"], Is.EqualTo("image/jpeg"));
+                Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString("yyyy-dd-MM")));
+            });
             Thread.Sleep(5000);
         }
 
