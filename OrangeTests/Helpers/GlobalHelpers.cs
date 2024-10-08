@@ -34,6 +34,11 @@ namespace OrangeHRMTests.Helpers
             _actions.ScrollToElement(element).Click(element).Perform();
         }
 
+        public void ScrollTo(IWebElement element)
+        {
+            _actions.ScrollToElement(element).Perform();
+        }
+
         public Int64 GetWindowWidth()
         {
             IJavaScriptExecutor js = (IJavaScriptExecutor)_driver;

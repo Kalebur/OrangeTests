@@ -60,8 +60,9 @@ namespace OrangeHRMTests
         {
             var filename = "cake_1.jpg";
             Dictionary<string, string> attachmentData;
+            IWebElement attachmentCard;
 
-            _loginHelpers.LoginAs("admin", true);
+            _loginHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
             _globalLocators.MyInfoLink.Click();
             _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
@@ -72,8 +73,9 @@ namespace OrangeHRMTests
             _globalHelpers.ClickViaActions(_myInfoPage.SaveAttachmentButton);
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
-            attachmentData = _myInfoPageHelpers.GetAttachedFileData(filename);
+            (attachmentCard, attachmentData) = _myInfoPageHelpers.GetAttachedFileData(filename);
             Assert.That(attachmentData, Is.Not.Null);
+            Assert.That(attachmentCard, Is.Not.Null);
             Thread.Sleep(5000);
         }
 
