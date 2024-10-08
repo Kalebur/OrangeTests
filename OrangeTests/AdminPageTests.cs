@@ -19,7 +19,7 @@ namespace OrangeHRMTests
         [SetUp]
         public void Setup()
         {
-            Random random = new Random();
+            Random random = new Random(Guid.NewGuid().GetHashCode());
             _driver = new ChromeDriver();
             _globalHelpers = new GlobalHelpers(_driver, random);
             _globalLocators = new GlobalLocators(_driver);
@@ -51,6 +51,7 @@ namespace OrangeHRMTests
             Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
 
             var username = _adminHelpers.GetTestUsername();
+            Assert.That(username, Is.Not.EqualTo("Admin"));
             _adminHelpers.SearchForUserByUsername(username);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
 

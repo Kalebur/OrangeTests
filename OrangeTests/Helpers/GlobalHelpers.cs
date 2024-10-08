@@ -31,8 +31,7 @@ namespace OrangeHRMTests.Helpers
 
         public void ClickViaActions(IWebElement element)
         {
-            _actions.ScrollToElement(element);
-            _actions.Click();
+            _actions.ScrollToElement(element).Click(element).Perform();
         }
 
         public Int64 GetWindowWidth()

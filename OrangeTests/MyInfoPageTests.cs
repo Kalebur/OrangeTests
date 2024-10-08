@@ -49,10 +49,32 @@ namespace OrangeHRMTests
             Assert.That(_myInfoPage.LastNameTextBox.GetAttribute("value"), Is.EqualTo(lastName));
 
             _myInfoPage.SavePersonalDetailsButton.Click();
-            _globalHelpers.Wait.Until(d => _myInfoPage.SuccessAlert.Displayed);
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalLocators.DashboardLink.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
             Assert.That(_globalLocators.UserDropdown.Text, Is.EqualTo(expectedName));
+        }
+
+        [Test]
+        public void CanUploadFile()
+        {
+            var filename = "cake_1.jpg";
+            Dictionary<string, string> attachmentData;
+
+            _loginHelpers.LoginAs("admin", true);
+            _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
+            _globalLocators.MyInfoLink.Click();
+            _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
+
+            _globalHelpers.ClickViaActions(_myInfoPage.AddAttachmentButton);
+            Assert.That(_myInfoPage.FilenameDiv.Displayed, Is.True);
+            _myInfoPage.FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename));
+            _globalHelpers.ClickViaActions(_myInfoPage.SaveAttachmentButton);
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
+            attachmentData = _myInfoPageHelpers.GetAttachedFileData(filename);
+            Assert.That(attachmentData, Is.Not.Null);
+            Thread.Sleep(5000);
         }
 
         [TearDown]

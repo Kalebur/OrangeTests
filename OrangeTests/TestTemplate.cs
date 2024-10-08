@@ -19,7 +19,7 @@ namespace OrangeHRMTests
             _globalLocators = new GlobalLocators(_driver);
         }
 
-        [Test]
+        //[Test]
         public void Test1()
         {
 

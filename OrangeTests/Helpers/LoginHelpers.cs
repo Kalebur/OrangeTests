@@ -26,12 +26,13 @@ namespace OrangeHRMTests.Helpers
 
         }
 
-        public void LoginAs(string user)
+        public void LoginAs(string user, bool maximizeWindow = false)
         {
             string username = string.Empty;
             string password = string.Empty;
 
             _driver.Navigate().GoToUrl(_loginPage.Url);
+            if (maximizeWindow) _driver.Manage().Window.Maximize();
             _wait.Until(_driver => _loginPage.UsernameTextBox.Displayed);
 
             if (_users.TryGetValue(user, out (string username, string Password) value))

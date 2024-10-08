@@ -33,10 +33,20 @@ namespace OrangeHRMTests
             Assert.That(_driver.WindowHandles, Has.Count.EqualTo(2));
             _driver.SwitchTo().Window(_driver.WindowHandles[1]);
             Assert.That(_driver.CurrentWindowHandle, Is.EqualTo(_driver.WindowHandles[1]));
-            _globalHelpers.Wait.Until(_driver => _helpPage.KnowledgeBaseSection.Displayed);
+            _globalHelpers.Wait.Until(_driver => _helpPage.SearchBar.Displayed);
 
             Assert.Multiple(() =>
             {
+                if (_globalHelpers.GetWindowWidth() < 1000)
+                {
+                    _helpPage.HamburgerMenuButton.Click();
+                    Assert.That(_helpPage.ResponsiveSignInLink.Displayed, Is.True);
+                }
+                else
+                {
+                    Assert.That(_helpPage.SignInLink.Displayed, Is.True);
+                }
+                Assert.That(_helpPage.SearchBar.Displayed, Is.True);
                 Assert.That(_helpPage.AdminUserGuideLink.Displayed, Is.True);
                 Assert.That(_helpPage.EmployeeUserGuideLink.Displayed, Is.True);
                 Assert.That(_helpPage.MobileAppLink.Displayed, Is.True);

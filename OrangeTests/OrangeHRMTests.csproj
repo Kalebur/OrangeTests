@@ -18,4 +18,8 @@
     <PackageReference Include="Selenium.Support" Version="4.25.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <None Update="cake_1.jpg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

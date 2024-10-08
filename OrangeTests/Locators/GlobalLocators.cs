@@ -15,5 +15,6 @@ namespace OrangeHRMTests.Locators
         public IWebElement MyInfoLink => _driver.FindElement(By.XPath("//a[contains(@href, '/pim/viewMyDetails')]"));
         public IWebElement DashboardLink => _driver.FindElement(By.XPath("//a[contains(@href, '/dashboard/index')]"));
         public IWebElement HelpButton => _driver.FindElement(By.XPath("//button[@title='Help']"));
+        public IWebElement SuccessAlert => _driver.FindElement(By.XPath("//p[text()='Success']"));
     }
 }

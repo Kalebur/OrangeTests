@@ -116,7 +116,6 @@ namespace OrangeHRMTests.Helpers
                 newUser.UserRole = ParseUserRole(_adminPage.ResponsiveUserRole.Text);
                 newUser.IsEnabled = _adminPage.ResponsiveUserStatus.Text == "Enabled" ? true : false;
                 SetEmployeeNameFromField(newEmployee, _adminPage.ResponsiveEmployeeName);
-                newUser.Employee = newEmployee;
             }
             else
             {
@@ -128,13 +127,24 @@ namespace OrangeHRMTests.Helpers
                 newUser.IsEnabled = fields[3].Text.Trim() == "Enabled" ? true : false;
             }
 
+            newUser.Employee = newEmployee;
             return newUser;
         }
 
         public string GetTestUsername()
         {
             var usernames = GetValidUsernames();
-            return usernames[_random.Next(usernames.Count)];
+            if (usernames.Count == 1 && usernames[0] == "Admin")
+            {
+                throw new InvalidOperationException("Admin was the only user found. Cannot operate on Admin.");
+            }
+
+            string testUsername;
+            do
+            {
+                testUsername = usernames[_random.Next(usernames.Count)];
+            } while (testUsername == "Admin");
+            return testUsername;
         }
 
         private List<string> GetValidUsernames()
@@ -152,7 +162,7 @@ namespace OrangeHRMTests.Helpers
             {
                 foreach (var user in _adminPage.Users)
                 {
-                    usernames.Add(user.FindElements(By.XPath("//div[@role='cell']")).Skip(1).Take(1).First().Text);
+                    usernames.Add(user.FindElements(By.XPath(".//div[@role='cell']")).Skip(1).Take(1).First().Text.Trim());
                 }
             }
 
