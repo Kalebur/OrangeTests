@@ -74,7 +74,6 @@ namespace OrangeHRMTests
             _adminHelpers.GetDeleteUserButton(_adminPage.Users.First()).Click();
             _globalHelpers.Wait.Until(d => _adminPage.ModalDeleteButton.Displayed);
             _adminPage.ModalDeleteButton.Click();
-            _adminPage.UsernameTextBox.SendKeys(updatedUserData.Username);
             _adminPage.SearchButton.Click();
             _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(0));
