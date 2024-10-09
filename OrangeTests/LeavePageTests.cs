@@ -66,6 +66,9 @@ namespace OrangeHRMTests
             _leavePage.DurationSelectElement.Click();
             _globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
             _leavePage.ApplyButton.Click();
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _leavePage.MyLeaveLink.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.MyLeaveListHeader.Displayed);
             Thread.Sleep(5000);
         }
 

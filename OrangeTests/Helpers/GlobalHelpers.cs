@@ -161,6 +161,21 @@ namespace OrangeHRMTests.Helpers
         {
             collection.Where(item => item.Text == targetText).First().Click();
         }
+
+        public IList<IWebElement> GetRowCells(IWebElement tableRow)
+        {
+            return tableRow.FindElements(By.XPath(".//div[@role='cell']")).ToList();
+        }
+
+        public (string firstName, string middleName, string lastName) ParseEmployeeName(string name)
+        {
+            var splitName = name.Split(' ');
+            var firstName = splitName.First();
+            var lastName = splitName.Last();
+            var middleName = string.Join(' ', splitName.Skip(1).Take(splitName.Length - 2));
+
+            return (firstName, middleName, lastName);
+        }
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using OrangeHRMTests.Locators;
+﻿using OrangeHRMTests.Extensions;
+using OrangeHRMTests.Locators;
 
 namespace OrangeHRMTests.Helpers
 {
@@ -31,8 +32,10 @@ namespace OrangeHRMTests.Helpers
         {
             _globalHelpers.Wait.Until(d => _leavePage.MonthSelector.Displayed);
             _leavePage.MonthSelector.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.MonthsWrapper.Displayed);
             _globalHelpers.SelectElementByText(_leavePage.Months, monthsAsStrings[date.Month]);
-            _leavePage.YearSelector.Click();
+            _leavePage.YearSelector.ClickViaJavaScript();
+            _globalHelpers.Wait.Until(d => _leavePage.YearWrapper.Displayed);
             _globalHelpers.SelectElementByText(_leavePage.Years, date.Year.ToString());
             _globalHelpers.SelectElementByText(_leavePage.Dates, date.Day.ToString());
         }
