@@ -61,6 +61,11 @@ namespace OrangeHRMTests.Helpers
             return user;
         }
 
+        public void SelectRandomElement(IList<IWebElement> elements)
+        {
+            elements[_random.Next(elements.Count)].Click();
+        }
+
         private UserRole GetRandomUserRole()
         {
             var allRoles = Enum.GetValues(typeof(UserRole));
@@ -152,6 +157,10 @@ namespace OrangeHRMTests.Helpers
             return passwords[_random.Next(passwords.Count)];
         }
 
+        public void SelectElementByText(IList<IWebElement> collection, string targetText)
+        {
+            collection.Where(item => item.Text == targetText).First().Click();
+        }
     }
 
 }

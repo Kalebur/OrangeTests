@@ -12,6 +12,7 @@ namespace OrangeHRMTests
         private GlobalLocators _globalLocators;
         private LoginHelpers _loginHelpers;
         private LeavePage _leavePage;
+        private LeavePageHelpers _leavePageHelpers;
 
         [SetUp]
         public void Setup()
@@ -21,11 +22,15 @@ namespace OrangeHRMTests
             _globalLocators = new GlobalLocators(_driver);
             _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
             _leavePage = new LeavePage(_driver);
+            _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers);
         }
 
         [Test]
-        public void Test1()
+        public void CanApplyForLeave()
         {
+            var startDate = new DateTime(2024, 11, 22);
+            var endDate = new DateTime(2024, 11, 25);
+
             _loginHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
             _globalLocators.LeaveLink.Click();
@@ -33,11 +38,34 @@ namespace OrangeHRMTests
             _leavePage.ApplyLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
             _leavePage.LeaveTypeSelectElement.Click();
-            foreach (var option in _leavePage.LeaveTypeOptions)
-            {
-                Console.WriteLine(option.Text);
-            }
+            _leavePageHelpers.SelectRandomLeaveType();
 
+            // Select Start Date
+            _leavePage.FromDateInputField.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.CalendarDropdown.Displayed);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_leavePage.MonthSelector.Displayed, Is.True);
+                Assert.That(_leavePage.YearSelector.Displayed, Is.True);
+            });
+            _leavePageHelpers.SelectDate(startDate);
+
+            // Select End Date
+            _leavePage.ToDateInputField.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.CalendarDropdown.Displayed);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_leavePage.MonthSelector.Displayed, Is.True);
+                Assert.That(_leavePage.YearSelector.Displayed, Is.True);
+            });
+            _leavePageHelpers.SelectDate(endDate);
+
+            _leavePage.PartialDaysSelectElement.Click();
+            _globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
+            _globalHelpers.Wait.Until(d => _leavePage.DurationSelectElement.Displayed);
+            _leavePage.DurationSelectElement.Click();
+            _globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
+            _leavePage.ApplyButton.Click();
             Thread.Sleep(5000);
         }
 
