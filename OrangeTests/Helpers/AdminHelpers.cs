@@ -22,11 +22,6 @@ namespace OrangeHRMTests.Helpers
             _random = random;
         }
 
-        public IWebElement GetDeleteUserButton(IWebElement userRow)
-        {
-            return userRow.FindElement(By.XPath("//i[contains(@class, 'bi-trash')]/parent::button"));
-        }
-
         public IWebElement GetEditUserButton(IWebElement userRow)
         {
             return userRow.FindElement(By.XPath("//i[contains(@class, 'bi-pencil-fill')]/parent::button"));

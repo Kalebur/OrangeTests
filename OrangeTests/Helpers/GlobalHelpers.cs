@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.DevTools.V85.IndexedDB;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using OrangeHRMTests.Locators;

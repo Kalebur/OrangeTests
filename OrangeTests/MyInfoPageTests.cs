@@ -80,10 +80,9 @@ namespace OrangeHRMTests
                 Assert.That(attachmentCard, Is.Not.Null);
                 Assert.That(attachmentData["addedBy"], Is.EqualTo("Admin"));
                 Assert.That(attachmentData["type"], Is.EqualTo("image/jpeg"));
-                Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString("yyyy-dd-MM")));
+                Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString("yyyy-MM-dd")));
             });
             _globalHelpers.DeleteRecord(attachmentCard);
-            Thread.Sleep(5000);
         }
 
         [TearDown]

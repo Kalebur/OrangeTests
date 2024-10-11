@@ -42,25 +42,14 @@ namespace OrangeHRMTests
             _leavePageHelpers.SelectRandomLeaveType();
 
             // Select Start Date
-            _leavePage.FromDateInputField.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.CalendarDropdown.Displayed);
-            Assert.Multiple(() =>
-            {
-                Assert.That(_leavePage.MonthSelector.Displayed, Is.True);
-                Assert.That(_leavePage.YearSelector.Displayed, Is.True);
-            });
-            _leavePageHelpers.SelectDate(startDate);
+            _leavePage.FromDateInputField.SendKeys(startDate.ToString("yyyy-MM-dd"));
 
             // Select End Date
-            _leavePage.ToDateInputField.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.CalendarDropdown.Displayed);
-            Assert.Multiple(() =>
-            {
-                Assert.That(_leavePage.MonthSelector.Displayed, Is.True);
-                Assert.That(_leavePage.YearSelector.Displayed, Is.True);
-            });
-            _leavePageHelpers.SelectDate(endDate);
+            _leavePage.ToDateInputField.ClearViaSendKeys();
+            _leavePage.ToDateInputField.SendKeys(endDate.ToString("yyyy-MM-dd"));
+            _leavePage.ToDateInputField.SendKeys(Keys.Tab);
 
+            _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
             _leavePage.PartialDaysSelectElement.Click();
             //_globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
             _leavePage.PartialDaysOptions.SelectItemByText("All Days");
