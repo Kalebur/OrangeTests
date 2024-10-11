@@ -21,8 +21,8 @@ namespace OrangeHRMTests
         {
             Random random = new();
             _driver = new ChromeDriver();
-            _globalHelpers = new GlobalHelpers(_driver, random);
             _globalLocators = new GlobalLocators(_driver);
+            _globalHelpers = new GlobalHelpers(_driver, random, _globalLocators);
             _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
             _adminPage = new AdminPage(_driver);
             _adminHelpers = new AdminHelpers(_driver, _adminPage, _globalHelpers, random);
@@ -131,15 +131,11 @@ namespace OrangeHRMTests
             _adminHelpers.SearchForUserByUsername(username);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
 
-            _adminHelpers.GetDeleteUserButton(_adminPage.Users.First()).Click();
-            _globalHelpers.Wait.Until(d => _adminPage.ModalDeleteButton.Displayed);
-            _adminPage.ModalDeleteButton.Click();
+            _globalHelpers.DeleteRecord(_adminPage.Users.First());
             _adminPage.UsernameTextBox.ClearViaSendKeys();
             _adminHelpers.SearchForUserByUsername(username);
             _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(0));
-
-
         }
 
         [TearDown]

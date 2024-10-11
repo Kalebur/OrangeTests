@@ -7,11 +7,12 @@ using System;
 
 namespace OrangeHRMTests.Helpers
 {
-    public class GlobalHelpers(IWebDriver driver, Random random)
+    public class GlobalHelpers(IWebDriver driver, Random random, GlobalLocators globalLocators)
     {
         private readonly IWebDriver _driver = driver;
-        private readonly Actions _actions = new Actions(driver);
+        private readonly Actions _actions = new(driver);
         private readonly Random _random = random;
+        private readonly GlobalLocators _globalLocators = globalLocators;
 
         public WebDriverWait Wait => new(_driver, TimeSpan.FromSeconds(10));
 
@@ -165,6 +166,13 @@ namespace OrangeHRMTests.Helpers
         public IList<IWebElement> GetRowCells(IWebElement tableRow)
         {
             return tableRow.FindElements(By.XPath(".//div[@role='cell']")).ToList();
+        }
+
+        public void DeleteRecord(IWebElement record)
+        {
+            record.FindElement(By.XPath(".//i[contains(@class, 'bi-trash')]//parent::button")).Click();
+            Wait.Until(d => _globalLocators.ModalDeleteButton.Displayed);
+            _globalLocators.ModalDeleteButton.Click();
         }
 
         public (string firstName, string middleName, string lastName) ParseEmployeeName(string name)

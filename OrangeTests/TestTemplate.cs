@@ -16,8 +16,8 @@ namespace OrangeHRMTests
         public void Setup()
         {
             _driver = new ChromeDriver();
-            _globalHelpers = new GlobalHelpers(_driver, new Random());
             _globalLocators = new GlobalLocators(_driver);
+            _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
             _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
         }
 

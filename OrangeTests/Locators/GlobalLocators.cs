@@ -16,5 +16,6 @@ namespace OrangeHRMTests.Locators
         public IWebElement DashboardLink => _driver.FindElement(By.XPath("//a[contains(@href, '/dashboard/index')]"));
         public IWebElement HelpButton => _driver.FindElement(By.XPath("//button[@title='Help']"));
         public IWebElement SuccessAlert => _driver.FindElement(By.XPath("//p[text()='Success']"));
+        public IWebElement ModalDeleteButton => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-modal-footer')]//button//i//parent::button"));
     }
 }

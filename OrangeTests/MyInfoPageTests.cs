@@ -19,8 +19,8 @@ namespace OrangeHRMTests
         public void Setup()
         {
             _driver = new ChromeDriver();
-            _globalHelpers = new GlobalHelpers(_driver, new Random());
             _globalLocators = new GlobalLocators(_driver);
+            _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
             _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
             _myInfoPage = new MyInfoPage(_driver);
             _myInfoPageHelpers = new MyInfoPageHelpers(_driver, _myInfoPage, _globalHelpers);
@@ -64,7 +64,7 @@ namespace OrangeHRMTests
 
             _loginHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
-            _globalLocators.MyInfoLink.Click();
+            _globalHelpers.ClickViaActions(_globalLocators.MyInfoLink);
             _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
 
             _globalHelpers.ClickViaActions(_myInfoPage.AddAttachmentButton);
@@ -82,6 +82,7 @@ namespace OrangeHRMTests
                 Assert.That(attachmentData["type"], Is.EqualTo("image/jpeg"));
                 Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString("yyyy-dd-MM")));
             });
+            _globalHelpers.DeleteRecord(attachmentCard);
             Thread.Sleep(5000);
         }
 

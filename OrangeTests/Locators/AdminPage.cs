@@ -2,14 +2,9 @@
 
 namespace OrangeHRMTests.Locators
 {
-    public class AdminPage
+    public class AdminPage(IWebDriver driver)
     {
-        private readonly IWebDriver _driver;
-
-        public AdminPage(IWebDriver driver)
-        {
-            _driver = driver;
-        }
+        private readonly IWebDriver _driver = driver;
 
         public string Url => "https://opensource-demo.orangehrmlive.com/web/index.php/admin/viewSystemUsers";
 
