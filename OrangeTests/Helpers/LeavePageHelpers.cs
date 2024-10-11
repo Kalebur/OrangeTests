@@ -33,11 +33,14 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.Wait.Until(d => _leavePage.MonthSelector.Displayed);
             _leavePage.MonthSelector.Click();
             _globalHelpers.Wait.Until(d => _leavePage.MonthsWrapper.Displayed);
-            _globalHelpers.SelectElementByText(_leavePage.Months, monthsAsStrings[date.Month]);
+            //_globalHelpers.SelectElementByText(_leavePage.Months, monthsAsStrings[date.Month]);
+            _leavePage.Months.SelectItemByText(monthsAsStrings[date.Month]);
             _leavePage.YearSelector.ClickViaJavaScript();
             _globalHelpers.Wait.Until(d => _leavePage.YearWrapper.Displayed);
-            _globalHelpers.SelectElementByText(_leavePage.Years, date.Year.ToString());
-            _globalHelpers.SelectElementByText(_leavePage.Dates, date.Day.ToString());
+            //_globalHelpers.SelectElementByText(_leavePage.Years, date.Year.ToString());
+            //_globalHelpers.SelectElementByText(_leavePage.Dates, date.Day.ToString());
+            _leavePage.Years.SelectItemByText(date.Year.ToString());
+            _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }
     }
 }

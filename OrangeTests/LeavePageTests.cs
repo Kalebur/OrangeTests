@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Locators;
 
@@ -61,10 +62,12 @@ namespace OrangeHRMTests
             _leavePageHelpers.SelectDate(endDate);
 
             _leavePage.PartialDaysSelectElement.Click();
-            _globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
+            //_globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
+            _leavePage.PartialDaysOptions.SelectItemByText("All Days");
             _globalHelpers.Wait.Until(d => _leavePage.DurationSelectElement.Displayed);
             _leavePage.DurationSelectElement.Click();
-            _globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
+            //_globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
+            _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
             _leavePage.ApplyButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _leavePage.MyLeaveLink.Click();

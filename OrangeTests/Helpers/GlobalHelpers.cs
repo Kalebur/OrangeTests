@@ -157,10 +157,10 @@ namespace OrangeHRMTests.Helpers
             return passwords[_random.Next(passwords.Count)];
         }
 
-        public void SelectElementByText(IList<IWebElement> collection, string targetText)
-        {
-            collection.Where(item => item.Text == targetText).First().Click();
-        }
+        //public void SelectElementByText(IList<IWebElement> collection, string targetText)
+        //{
+        //    collection.Where(item => item.Text == targetText).First().Click();
+        //}
 
         public IList<IWebElement> GetRowCells(IWebElement tableRow)
         {
