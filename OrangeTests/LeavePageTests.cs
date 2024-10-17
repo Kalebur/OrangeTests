@@ -29,10 +29,11 @@ namespace OrangeHRMTests
         [Test]
         public void CanApplyForLeave()
         {
-            var startDate = new DateTime(2024, 11, 22);
-            var endDate = new DateTime(2024, 11, 25);
+            var startDate = new DateTime(2024, 12, 3);
+            var endDate = new DateTime(2024, 12, 5);
+            (bool recordExists, string leaveStatus) = (false, null);
 
-            _loginHelpers.LoginAs("admin");
+            _loginHelpers.LoginAs("admin", true);
             _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
             _globalLocators.LeaveLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.ApplyLink.Displayed);
@@ -59,8 +60,10 @@ namespace OrangeHRMTests
             _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
             _leavePage.ApplyButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
-            _leavePage.MyLeaveLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.MyLeaveListHeader.Displayed);
+            _leavePage.LeaveListLink.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.LeaveListHeader.Displayed);
+            Assert.That(_leavePage.RecordCountSpan.Displayed, Is.True);
+            (recordExists, leaveStatus) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             Thread.Sleep(5000);
         }
 

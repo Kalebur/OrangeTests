@@ -43,5 +43,10 @@ namespace OrangeHRMTests.Helpers
             _leavePage.Years.SelectItemByText(date.Year.ToString());
             _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }
+
+        public (bool recordExists, string leaveStatus) GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate)
+        {
+            return (true, "Pending");
+        }
     }
 }

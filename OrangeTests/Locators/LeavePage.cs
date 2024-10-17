@@ -15,8 +15,9 @@ namespace OrangeHRMTests.Locators
 
         public IWebElement ApplyLink => _driver.FindElement(By.XPath("//nav//a[contains(text(), 'Apply')]"));
         public IWebElement MyLeaveLink => _driver.FindElement(By.XPath("//nav//a[contains(text(), 'My Leave')]"));
-        public IWebElement LeaveListLink => _driver.FindElement(By.XPath("//nav//a[contains(text(), 'Leave List')]"));
         public IWebElement MyLeaveListHeader => _driver.FindElement(By.XPath("//h5[text()='My Leave List']"));
+        public IWebElement LeaveListLink => _driver.FindElement(By.XPath("//nav//a[contains(text(), 'Leave List')]"));
+        public IWebElement LeaveListHeader => _driver.FindElement(By.XPath("//div[contains(@class, 'oxd-table-filter-header-title')]//h5"));
         public IWebElement ApplyButton => _driver.FindElement(By.XPath("//button[@type='submit']"));
         public IWebElement LeaveBalanceField => _driver.FindElement(By.XPath("//p[contains(@class, 'orangehrm-leave-balance-text')]"));
         public IWebElement LeaveTypeSelectElement => _driver.FindElement(By.XPath("//label[contains(text(), 'Leave Type')]//parent::div//following-sibling::div"));
@@ -36,6 +37,7 @@ namespace OrangeHRMTests.Locators
         public IWebElement DurationSelectElement => _driver.FindElement(By.XPath("//label[contains(text(), 'Duration')]//parent::div//following-sibling::div"));
         public IList<IWebElement> DurationOptions => _driver.FindElements(By.XPath("//label[contains(text(), 'Duration')]//parent::div//following-sibling::div//div[contains(@class, 'oxd-select-dropdown')]//div")).Skip(1).ToList();
         public IWebElement CommentsTextArea => _driver.FindElement(By.XPath("//textarea"));
+        public IWebElement RecordCountSpan => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-header-container')]//span[contains(@class, 'oxd-text--span')]"));
         public IList<IWebElement> LeaveRecords => _driver.FindElements(By.XPath("//div[contains(@class, 'oxd-table-body')]/child::div[contains(@class, 'oxd-table-card')]"));
     }
 }
