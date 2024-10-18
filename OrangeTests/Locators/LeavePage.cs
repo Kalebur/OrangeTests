@@ -39,5 +39,6 @@ namespace OrangeHRMTests.Locators
         public IWebElement CommentsTextArea => _driver.FindElement(By.XPath("//textarea"));
         public IWebElement RecordCountSpan => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-header-container')]//span[contains(@class, 'oxd-text--span')]"));
         public IList<IWebElement> LeaveRecords => _driver.FindElements(By.XPath("//div[contains(@class, 'oxd-table-body')]/child::div[contains(@class, 'oxd-table-card')]"));
+        public IWebElement CancelLeaveButton => _driver.FindElement(By.XPath("//button[contains(@class, 'oxd-button--label-warn')]"));
     }
 }

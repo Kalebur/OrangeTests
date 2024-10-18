@@ -1,4 +1,5 @@
-﻿using OrangeHRMTests.Extensions;
+﻿using OpenQA.Selenium;
+using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Locators;
 
 namespace OrangeHRMTests.Helpers
@@ -44,9 +45,37 @@ namespace OrangeHRMTests.Helpers
             _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }
 
-        public (bool recordExists, string leaveStatus) GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate)
+        public (bool recordExists, string leaveStatus, IWebElement leaveRecord) GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate)
         {
-            return (true, "Pending");
+            foreach (var record in _leavePage.LeaveRecords)
+            {
+                var recordData = _globalHelpers.GetRowCells(record);
+                (var fromDate, var toDate) = ParseRecordDates(recordData[1]);
+                if (fromDate == startDate && toDate == endDate)
+                {
+                    return (true, recordData[6].Text.Split(' ')[0], record);
+                }
+            }
+
+            return (false, "Not Found.", null);
+        }
+
+        private (DateTime fromDate, DateTime? toDate) ParseRecordDates(IWebElement datesElement)
+        {
+            var dates = datesElement.Text.Split(" to ");
+            var fromDateStrings = dates[0].Split('-');
+            var fromDateAsString = $"{fromDateStrings[2]}/{fromDateStrings[1]}/{fromDateStrings[0]}";
+            var fromDate = DateTime.Parse(fromDateAsString);
+            DateTime? toDate = null;
+
+            if (dates.Length > 1)
+            {
+                var toDateStrings = dates[1].Split('-');
+                var toDateAsString = $"{toDateStrings[2]}/{toDateStrings[1]}/{toDateStrings[0]}";
+                toDate = DateTime.Parse(toDateAsString);
+            }
+
+            return (fromDate, toDate);
         }
     }
 }
