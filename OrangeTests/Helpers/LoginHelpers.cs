@@ -51,7 +51,7 @@ namespace OrangeHRMTests.Helpers
             _loginPage.LoginButton.Click();
         }
 
-        public void LoginWithCredentials(string username, string password)
+        public void LoginWithCredentials(string username, string password, bool maximizeWindow = false)
         {
             _driver.Navigate().GoToUrl(_loginPage.Url);
             _wait.Until(_driver => _loginPage.UsernameTextBox.Displayed);

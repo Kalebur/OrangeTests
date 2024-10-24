@@ -14,6 +14,7 @@ namespace OrangeHRMTests.Helpers
         private readonly Actions _actions = new(driver);
         private readonly Random _random = random;
         private readonly GlobalLocators _globalLocators = globalLocators;
+        private readonly LoginHelpers _loginHelpers;
 
         public WebDriverWait Wait => new(_driver, TimeSpan.FromSeconds(10));
 
@@ -184,6 +185,18 @@ namespace OrangeHRMTests.Helpers
             var middleName = string.Join(' ', splitName.Skip(1).Take(splitName.Length - 2));
 
             return (firstName, middleName, lastName);
+        }
+
+        public void LoginAs(string username, bool maximizeWindow = false)
+        {
+            var loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), this, _globalLocators);
+            loginHelpers.LoginAs(username, maximizeWindow);
+        }
+
+        public void LoginWithCredentials(string username, string password, bool maximizeWindow = false)
+        {
+            var loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), this, _globalLocators);
+            loginHelpers.LoginWithCredentials(username, password, maximizeWindow);
         }
     }
 
