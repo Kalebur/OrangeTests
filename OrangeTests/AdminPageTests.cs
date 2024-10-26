@@ -111,12 +111,7 @@ namespace OrangeHRMTests
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
             Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
 
-            string username;
-            do
-            {
-                username = _adminHelpers.GetTestUsername();
-            } while (username == "Admin");
-
+            string username = _adminHelpers.GetTestUsername();
             _adminHelpers.SearchForUserByUsername(username);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
 

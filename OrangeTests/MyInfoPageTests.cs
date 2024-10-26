@@ -48,7 +48,7 @@ namespace OrangeHRMTests
             _myInfoPage.LastNameTextBox.SendKeys(lastName);
             Assert.That(_myInfoPage.LastNameTextBox.GetAttribute("value"), Is.EqualTo(lastName));
 
-            _myInfoPage.SavePersonalDetailsButton.Click();
+            _myInfoPage.LastNameTextBox.SendKeys(Keys.Enter);
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalLocators.DashboardLink.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
