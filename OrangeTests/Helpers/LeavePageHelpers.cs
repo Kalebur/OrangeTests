@@ -4,10 +4,11 @@ using OrangeHRMTests.Locators;
 
 namespace OrangeHRMTests.Helpers
 {
-    public class LeavePageHelpers(LeavePage leavePage, GlobalHelpers globalHelpers)
+    public class LeavePageHelpers(LeavePage leavePage, GlobalHelpers globalHelpers, GlobalLocators globalLocators)
     {
         private readonly LeavePage _leavePage = leavePage;
         private readonly GlobalHelpers _globalHelpers = globalHelpers;
+        private readonly GlobalLocators _globalLocators = globalLocators;
         private readonly Dictionary<int, string> monthsAsStrings = new()
             {
                 { 1, "January" },
@@ -26,6 +27,7 @@ namespace OrangeHRMTests.Helpers
 
         public void SelectRandomLeaveType()
         {
+            _leavePage.LeaveTypeSelectElement.Click();
             _globalHelpers.SelectRandomElement(_leavePage.LeaveTypeOptions);
         }
 
@@ -74,6 +76,36 @@ namespace OrangeHRMTests.Helpers
             }
 
             return (false, "Not Found.", null);
+        }
+
+        public void ApplyForLeave(DateTime startDate, DateTime endDate)
+        {
+            _globalHelpers.LoginAs("admin", true);
+            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
+            _globalLocators.LeaveLink.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.ApplyLink.Displayed);
+            _leavePage.ApplyLink.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
+            SelectRandomLeaveType();
+
+            // Select Start Date
+            _leavePage.FromDateInputField.SendKeys(startDate.ToString("yyyy-dd-MM"));
+
+            // Select End Date
+            _leavePage.ToDateInputField.ClearViaSendKeys();
+            _leavePage.ToDateInputField.SendKeys(endDate.ToString("yyyy-dd-MM"));
+            _leavePage.ToDateInputField.SendKeys(Keys.Tab);
+
+            _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
+            _leavePage.PartialDaysSelectElement.Click();
+            //_globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
+            _leavePage.PartialDaysOptions.SelectItemByText("All Days");
+            _globalHelpers.Wait.Until(d => _leavePage.DurationSelectElement.Displayed);
+            _leavePage.DurationSelectElement.Click();
+            //_globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
+            _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
+            _leavePage.ApplyButton.Click();
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
         }
 
         private (DateTime fromDate, DateTime? toDate) ParseRecordDates(IWebElement datesElement)

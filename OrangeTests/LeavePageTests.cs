@@ -21,42 +21,18 @@ namespace OrangeHRMTests
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
             _leavePage = new LeavePage(_driver);
-            _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers);
+            _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers, _globalLocators);
         }
 
-        [Test]
-        public void CanApplyForLeave()
+        [TestCase(5)]
+        //[TestCase(14)]
+        //[TestCase(1)]
+        public void CanApplyForLeave(int duration)
         {
-            (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(5);
+            (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(duration);
             (bool recordExists, string leaveStatus, IWebElement leaveRecord) = (false, null, null);
 
-            _globalHelpers.LoginAs("admin", true);
-            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
-            _globalLocators.LeaveLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.ApplyLink.Displayed);
-            _leavePage.ApplyLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
-            _leavePage.LeaveTypeSelectElement.Click();
-            _leavePageHelpers.SelectRandomLeaveType();
-
-            // Select Start Date
-            _leavePage.FromDateInputField.SendKeys(startDate.ToString("yyyy-dd-MM"));
-
-            // Select End Date
-            _leavePage.ToDateInputField.ClearViaSendKeys();
-            _leavePage.ToDateInputField.SendKeys(endDate.ToString("yyyy-dd-MM"));
-            _leavePage.ToDateInputField.SendKeys(Keys.Tab);
-
-            _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
-            _leavePage.PartialDaysSelectElement.Click();
-            //_globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
-            _leavePage.PartialDaysOptions.SelectItemByText("All Days");
-            _globalHelpers.Wait.Until(d => _leavePage.DurationSelectElement.Displayed);
-            _leavePage.DurationSelectElement.Click();
-            //_globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
-            _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
-            _leavePage.ApplyButton.Click();
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _leavePageHelpers.ApplyForLeave(startDate, endDate);
 
             // Check that record exists in main Leave List and My Leave list.
             _leavePage.LeaveListLink.Click();
@@ -72,6 +48,7 @@ namespace OrangeHRMTests
             _leavePage.MyLeaveLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.LeaveListHeader.Displayed);
             Assert.That(_leavePage.RecordCountSpan.Displayed, Is.True);
+            Task.Delay(1500);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             Assert.Multiple(() =>
             {
@@ -83,13 +60,13 @@ namespace OrangeHRMTests
             _leavePage.CancelLeaveButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
+            Task.Delay(1500);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             Assert.Multiple(() =>
             {
                 Assert.That(recordExists, Is.True);
                 Assert.That(leaveStatus, Is.EqualTo("Cancelled"));
             });
-            Thread.Sleep(5000);
         }
 
         [TearDown]
