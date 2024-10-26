@@ -29,18 +29,34 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.SelectRandomElement(_leavePage.LeaveTypeOptions);
         }
 
+        public (DateTime startDate, DateTime endDate) GetRandomLeaveDates(int duration)
+        {
+            var currentDate = DateTime.Now.Date;
+            var startDate = currentDate.AddDays(new Random().Next(10, 31));
+            startDate = EnsureWorkingDay(startDate);
+            var endDate = startDate.AddDays(duration);
+            endDate = EnsureWorkingDay(endDate);
+
+            return (startDate, endDate);
+        }
+
+        private DateTime EnsureWorkingDay(DateTime initialDate)
+        {
+            var adjustedDate = initialDate.Date;
+            if (adjustedDate.DayOfWeek == DayOfWeek.Saturday) adjustedDate = adjustedDate.AddDays(2);
+            else if (adjustedDate.DayOfWeek == DayOfWeek.Sunday) adjustedDate = adjustedDate.AddDays(1);
+
+            return adjustedDate;
+        }
+
         public void SelectDate(DateTime date)
         {
             _globalHelpers.Wait.Until(d => _leavePage.MonthSelector.Displayed);
             _leavePage.MonthSelector.ClickViaJavaScript();
             _globalHelpers.Wait.Until(d => _leavePage.MonthsWrapper.Displayed);
-            //_globalHelpers.SelectElementByText(_leavePage.Months, monthsAsStrings[date.Month]);
             _leavePage.Months.SelectItemByText(monthsAsStrings[date.Month]);
-            //_leavePage.YearSelector.ClickViaJavaScript();
             _globalHelpers.ClickViaActions(_leavePage.YearSelector);
             _globalHelpers.Wait.Until(d => _leavePage.YearWrapper.Displayed);
-            //_globalHelpers.SelectElementByText(_leavePage.Years, date.Year.ToString());
-            //_globalHelpers.SelectElementByText(_leavePage.Dates, date.Day.ToString());
             _leavePage.Years.SelectItemByText(date.Year.ToString());
             _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }

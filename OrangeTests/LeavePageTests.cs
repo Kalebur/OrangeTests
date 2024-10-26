@@ -11,7 +11,6 @@ namespace OrangeHRMTests
         private IWebDriver _driver;
         private GlobalHelpers _globalHelpers;
         private GlobalLocators _globalLocators;
-        //private LoginHelpers _loginHelpers;
         private LeavePage _leavePage;
         private LeavePageHelpers _leavePageHelpers;
 
@@ -21,7 +20,6 @@ namespace OrangeHRMTests
             _driver = new ChromeDriver();
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
-            //_loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
             _leavePage = new LeavePage(_driver);
             _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers);
         }
@@ -29,8 +27,7 @@ namespace OrangeHRMTests
         [Test]
         public void CanApplyForLeave()
         {
-            var startDate = new DateTime(2024, 11, 18);
-            var endDate = new DateTime(2024, 11, 22);
+            (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(5);
             (bool recordExists, string leaveStatus, IWebElement leaveRecord) = (false, null, null);
 
             _globalHelpers.LoginAs("admin", true);
@@ -65,6 +62,7 @@ namespace OrangeHRMTests
             _leavePage.LeaveListLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.LeaveListHeader.Displayed);
             Assert.That(_leavePage.RecordCountSpan.Displayed, Is.True);
+            Task.Delay(1500);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             Assert.Multiple(() =>
             {
