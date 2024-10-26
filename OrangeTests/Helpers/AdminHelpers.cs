@@ -133,6 +133,7 @@ namespace OrangeHRMTests.Helpers
                 SeedUsers();
             }
 
+            usernames = GetValidUsernames();
             string testUsername;
             do
             {
@@ -185,7 +186,7 @@ namespace OrangeHRMTests.Helpers
                 _adminPage.AddUserButton.ClickViaJavaScript();
                 _globalHelpers.Wait.Until(d => _adminPage.ConfirmPasswordTextBox.Displayed);
                 AddUser(newUser);
-                _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+                _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
             }
         }
 
