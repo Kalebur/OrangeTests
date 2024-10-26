@@ -59,7 +59,7 @@ namespace OrangeHRMTests.Helpers
                 Employee = new Employee()
             };
             AssignRandomName(user);
-            user.IsEnabled = _random.Next(1, 101) > 50;
+            user.IsEnabled = true;
 
             return user;
         }

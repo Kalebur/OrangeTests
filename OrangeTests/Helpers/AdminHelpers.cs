@@ -2,7 +2,6 @@
 using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Locators;
 using OrangeHRMTests.Models;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
 
 namespace OrangeHRMTests.Helpers
@@ -98,7 +97,7 @@ namespace OrangeHRMTests.Helpers
             _adminPage.UserRoleDropdownOptions.SelectItemByText(roleText);
         }
 
-        
+
 
         public User ParseUserTableRow(IWebElement tableRow)
         {
@@ -131,7 +130,7 @@ namespace OrangeHRMTests.Helpers
             var usernames = GetValidUsernames();
             if (usernames.Count == 1 && usernames[0] == "Admin")
             {
-                throw new InvalidOperationException("Admin was the only user found. Cannot operate on Admin.");
+                SeedUsers();
             }
 
             string testUsername;
@@ -175,6 +174,32 @@ namespace OrangeHRMTests.Helpers
         private UserRole ParseUserRole(string userRole)
         {
             return (UserRole)Enum.Parse(typeof(UserRole), userRole);
+        }
+
+        public void SeedUsers()
+        {
+            var numUsersToAdd = _random.Next(3, 6);
+            for (int i = 0; i < numUsersToAdd; i++)
+            {
+                var newUser = _globalHelpers.GenerateRandomUser();
+                _adminPage.AddUserButton.ClickViaJavaScript();
+                _globalHelpers.Wait.Until(d => _adminPage.ConfirmPasswordTextBox.Displayed);
+                AddUser(newUser);
+                _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+            }
+        }
+
+        public void AddUser(User user)
+        {
+            SelectUserRole(user.UserRole.ToString());
+            var name = GetEmployeeNameElement();
+            SetEmployeeNameFromField(user.Employee, name);
+            name.Click();
+            SelectUserStatus(user.IsEnabled);
+            _adminPage.UsernameTextBox.SendKeys(user.Username);
+            _adminPage.PasswordTextBox.SendKeys(user.Password);
+            _adminPage.ConfirmPasswordTextBox.SendKeys(user.Password);
+            _adminPage.SaveUserButton.ClickViaJavaScript();
         }
     }
 }

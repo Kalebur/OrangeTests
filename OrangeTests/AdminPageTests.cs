@@ -89,16 +89,7 @@ namespace OrangeHRMTests
             _adminPage.AddUserButton.ClickViaJavaScript();
             _globalHelpers.Wait.Until(d => _adminPage.ConfirmPasswordTextBox.Displayed);
             var newUser = _globalHelpers.GenerateRandomUser();
-            newUser.IsEnabled = true;
-            _adminHelpers.SelectUserRole(newUser.UserRole.ToString());
-            var name = _adminHelpers.GetEmployeeNameElement();
-            _adminHelpers.SetEmployeeNameFromField(newUser.Employee, name);
-            name.Click();
-            _adminHelpers.SelectUserStatus(newUser.IsEnabled);
-            _adminPage.UsernameTextBox.SendKeys(newUser.Username);
-            _adminPage.PasswordTextBox.SendKeys(newUser.Password);
-            _adminPage.ConfirmPasswordTextBox.SendKeys(newUser.Password);
-            _adminPage.SaveUserButton.ClickViaJavaScript();
+            _adminHelpers.AddUser(newUser);
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
             _loginHelpers.Logout();
             _loginHelpers.LoginWithCredentials(newUser.Username, newUser.Password);

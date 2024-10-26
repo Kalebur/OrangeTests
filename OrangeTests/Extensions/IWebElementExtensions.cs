@@ -17,6 +17,7 @@ namespace OrangeHRMTests.Extensions
             }
 
             IJavaScriptExecutor javaScriptExecutor = (IJavaScriptExecutor)_cachedDriver!;
+            javaScriptExecutor.ExecuteScript("arguments[0].scrollIntoView(true);", element);
             javaScriptExecutor.ExecuteScript("arguments[0].click();", element);
         }
 
