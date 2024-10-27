@@ -24,9 +24,9 @@ namespace OrangeHRMTests
             _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers, _globalLocators);
         }
 
-        [TestCase(5)]
-        //[TestCase(14)]
         //[TestCase(1)]
+        //[TestCase(5)]
+        [TestCase(14)]
         public void CanApplyForLeave(int duration)
         {
             (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(duration);
@@ -43,7 +43,7 @@ namespace OrangeHRMTests
             Assert.Multiple(() =>
             {
                 Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Pending"));
+                Assert.That(leaveStatus, Is.EqualTo("Pending"), $"No record found for range {startDate.ToString("yyyy-MM-dd")} - {endDate.ToString("yyyy-MM-dd")}");
             });
             _leavePage.MyLeaveLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.LeaveListHeader.Displayed);

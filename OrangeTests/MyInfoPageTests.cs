@@ -11,7 +11,6 @@ namespace OrangeHRMTests
         private IWebDriver _driver;
         private GlobalHelpers _globalHelpers;
         private GlobalLocators _globalLocators;
-        private LoginHelpers _loginHelpers;
         private MyInfoPage _myInfoPage;
         private MyInfoPageHelpers _myInfoPageHelpers;
 
@@ -21,19 +20,18 @@ namespace OrangeHRMTests
             _driver = new ChromeDriver();
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
-            _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
             _myInfoPage = new MyInfoPage(_driver);
             _myInfoPageHelpers = new MyInfoPageHelpers(_driver, _myInfoPage, _globalHelpers);
         }
 
         //[TestCase("John", "William", "Waterhouse", "John Waterhouse")]
         //[TestCase("Jane", "Marie", "McDougal", "Jane McDougal")]
-        //[TestCase("Trini", "", "Quan", "Trini Quan")]
+        [TestCase("Trini", "", "Quan", "Trini Quan")]
         [TestCase("Maxwell", "Hunter", "Sloan", "Maxwell Sloan")]
         [TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
         public void CanEditOwnName(string firstName, string middleName, string lastName, string expectedName)
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
             _globalLocators.MyInfoLink.Click();
             _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
@@ -62,7 +60,7 @@ namespace OrangeHRMTests
             Dictionary<string, string> attachmentData;
             IWebElement attachmentCard;
 
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
             _globalHelpers.ClickViaActions(_globalLocators.MyInfoLink);
             _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);

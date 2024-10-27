@@ -198,6 +198,12 @@ namespace OrangeHRMTests.Helpers
             var loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), this, _globalLocators);
             loginHelpers.LoginWithCredentials(username, password, maximizeWindow);
         }
+
+        public void Logout()
+        {
+            var loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), this, _globalLocators);
+            loginHelpers.Logout();
+        }
     }
 
 }

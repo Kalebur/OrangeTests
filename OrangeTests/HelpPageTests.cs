@@ -10,7 +10,6 @@ namespace OrangeHRMTests
         private IWebDriver _driver;
         private GlobalLocators _globalLocators;
         private GlobalHelpers _globalHelpers;
-        private LoginHelpers _loginHelpers;
         private HelpPage _helpPage;
 
         [SetUp]
@@ -19,14 +18,13 @@ namespace OrangeHRMTests
             _driver = new ChromeDriver();
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
-            _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
             _helpPage = new HelpPage(_driver);
         }
 
         [Test]
         public void HelpPage_ContainsExpectedLinks()
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(_driver => _globalLocators.HelpButton.Displayed);
             _globalLocators.HelpButton.Click();
 

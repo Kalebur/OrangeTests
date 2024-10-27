@@ -12,7 +12,6 @@ namespace OrangeHRMTests
         private IWebDriver _driver;
         private GlobalHelpers _globalHelpers;
         private GlobalLocators _globalLocators;
-        private LoginHelpers _loginHelpers;
         private AdminPage _adminPage;
         private AdminHelpers _adminHelpers;
 
@@ -23,7 +22,6 @@ namespace OrangeHRMTests
             _driver = new ChromeDriver();
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, random, _globalLocators);
-            _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
             _adminPage = new AdminPage(_driver);
             _adminHelpers = new AdminHelpers(_driver, _adminPage, _globalHelpers, random);
         }
@@ -31,7 +29,7 @@ namespace OrangeHRMTests
         [Test]
         public void CanSearchForUser()
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
             _globalLocators.AdminLink.Click();
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
@@ -44,7 +42,7 @@ namespace OrangeHRMTests
         [Test]
         public void CanEditUser()
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
             _globalLocators.AdminLink.Click();
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
@@ -80,7 +78,7 @@ namespace OrangeHRMTests
         [Test]
         public void CanAddUser()
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
             _globalLocators.AdminLink.ClickViaJavaScript();
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
@@ -91,8 +89,8 @@ namespace OrangeHRMTests
             var newUser = _globalHelpers.GenerateRandomUser();
             _adminHelpers.AddUser(newUser);
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
-            _loginHelpers.Logout();
-            _loginHelpers.LoginWithCredentials(newUser.Username, newUser.Password);
+            _globalHelpers.Logout();
+            _globalHelpers.LoginWithCredentials(newUser.Username, newUser.Password);
             _globalHelpers.Wait.Until(_driver => _globalLocators.UserDropdown.Displayed);
             Assert.Multiple(() =>
             {
@@ -105,7 +103,7 @@ namespace OrangeHRMTests
         [Test]
         public void CanDeleteUser()
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
             _globalLocators.AdminLink.Click();
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
