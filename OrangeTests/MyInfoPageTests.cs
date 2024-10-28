@@ -24,11 +24,11 @@ namespace OrangeHRMTests
             _myInfoPageHelpers = new MyInfoPageHelpers(_driver, _myInfoPage, _globalHelpers, _globalLocators);
         }
 
-        //[TestCase("John", "William", "Waterhouse", "John Waterhouse")]
-        //[TestCase("Jane", "Marie", "McDougal", "Jane McDougal")]
+        [TestCase("John", "William", "Waterhouse", "John Waterhouse")]
+        [TestCase("Tommy", "", "Oliver", "Tommy Oliver")]
         [TestCase("Trini", "", "Quan", "Trini Quan")]
-        //[TestCase("Maxwell", "Hunter", "Sloan", "Maxwell Sloan")]
-        //[TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
+        [TestCase("Mary", "Jane", "Watson", "Mary Watson")]
+        [TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
         public void CanEditOwnName(string firstName, string middleName, string lastName, string expectedName)
         {
             _myInfoPageHelpers.NavigateTo();
@@ -61,7 +61,9 @@ namespace OrangeHRMTests
 
             _myInfoPageHelpers.NavigateTo();
             _myInfoPageHelpers.UploadFile(filename);
-            
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
+
             (attachmentCard, attachmentData) = _myInfoPageHelpers.GetAttachedFileData(filename);
             Assert.Multiple(() =>
             {
@@ -72,6 +74,22 @@ namespace OrangeHRMTests
                 Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString("yyyy-dd-MM")));
             });
             _globalHelpers.DeleteRecord(attachmentCard);
+        }
+
+        [Test]
+        public void Negative_CannotUploadFileLargerThan1MB()
+        {
+            var filename = "cake_2.png";
+
+            _myInfoPageHelpers.NavigateTo();
+            _myInfoPageHelpers.UploadFile(filename);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(_myInfoPage.FilenameDiv.Displayed, Is.True);
+                Assert.That(_myInfoPage.ErrorMessageSpan.Displayed, Is.True);
+                Assert.That(_myInfoPage.ErrorMessageSpan.Text, Is.EqualTo("Attachment Size Exceeded"));
+            });
         }
 
         [TearDown]

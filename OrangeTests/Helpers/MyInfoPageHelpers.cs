@@ -43,8 +43,6 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.ClickViaActions(_myInfoPage.AddAttachmentButton);
             _myInfoPage.FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", filename));
             _globalHelpers.ClickViaActions(_myInfoPage.SaveAttachmentButton);
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
-            _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
         }
 
         private Dictionary<string, string> GetAttachmentDataFromRow(IWebElement tableRow)

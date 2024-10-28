@@ -20,6 +20,7 @@
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <None Update="TestFiles\cake_1.jpg" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestFiles\cake_2.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

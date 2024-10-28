@@ -13,6 +13,7 @@ namespace OrangeHRMTests.Locators
         public IWebElement SavePersonalDetailsButton => _driver.FindElement(By.XPath("//h6[text()='Personal Details']//following-sibling::form//button[@type='submit']"));
         public IWebElement RecordCountSpan => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-attachment')]//hr[contains(@class, 'oxd-divider orangehrm-horizontal-margin')]//following-sibling::div//span"));
         public IWebElement FileInput => _driver.FindElement(By.XPath("//input[@type='file']"));
+        public IWebElement ErrorMessageSpan => _driver.FindElement(By.XPath("//span[contains(@class, 'error-message')]"));
         public IWebElement FilenameDiv => _driver.FindElement(By.XPath("//div[contains(@class, 'oxd-file-input-div')]"));
         public IWebElement AddAttachmentButton => _driver.FindElement(By.XPath("//button//i[contains(@class, 'bi-plus')]//parent::button"));
         public IList<IWebElement> Attachments => _driver.FindElements(By.XPath("//div[contains(@class, 'oxd-table-body')]/child::div[contains(@class, 'oxd-table-card')]"));
