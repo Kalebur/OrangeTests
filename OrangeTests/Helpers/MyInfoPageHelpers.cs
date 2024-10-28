@@ -3,11 +3,12 @@ using OrangeHRMTests.Locators;
 
 namespace OrangeHRMTests.Helpers
 {
-    public class MyInfoPageHelpers(IWebDriver driver, MyInfoPage myInfoPage, GlobalHelpers globalHelpers)
+    public class MyInfoPageHelpers(IWebDriver driver, MyInfoPage myInfoPage, GlobalHelpers globalHelpers, GlobalLocators globalLocators)
     {
         private readonly IWebDriver _driver = driver;
         private readonly MyInfoPage _myInfoPage = myInfoPage;
         private readonly GlobalHelpers _globalHelpers = globalHelpers;
+        private readonly GlobalLocators _globalLocators = globalLocators;
 
         public (IWebElement attachment, Dictionary<string, string>) GetAttachedFileData(string fileName)
         {
@@ -27,6 +28,23 @@ namespace OrangeHRMTests.Helpers
             }
 
             return (attachmentCard, attachmentData);
+        }
+
+        public void NavigateTo()
+        {
+            _globalHelpers.LoginAs("admin");
+            _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
+            _globalHelpers.ClickViaActions(_globalLocators.MyInfoLink);
+            _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
+        }
+
+        public void UploadFile(string filename)
+        {
+            _globalHelpers.ClickViaActions(_myInfoPage.AddAttachmentButton);
+            _myInfoPage.FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", filename));
+            _globalHelpers.ClickViaActions(_myInfoPage.SaveAttachmentButton);
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
         }
 
         private Dictionary<string, string> GetAttachmentDataFromRow(IWebElement tableRow)

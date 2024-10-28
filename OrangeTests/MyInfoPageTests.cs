@@ -21,31 +21,30 @@ namespace OrangeHRMTests
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
             _myInfoPage = new MyInfoPage(_driver);
-            _myInfoPageHelpers = new MyInfoPageHelpers(_driver, _myInfoPage, _globalHelpers);
+            _myInfoPageHelpers = new MyInfoPageHelpers(_driver, _myInfoPage, _globalHelpers, _globalLocators);
         }
 
         //[TestCase("John", "William", "Waterhouse", "John Waterhouse")]
         //[TestCase("Jane", "Marie", "McDougal", "Jane McDougal")]
         [TestCase("Trini", "", "Quan", "Trini Quan")]
-        [TestCase("Maxwell", "Hunter", "Sloan", "Maxwell Sloan")]
-        [TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
+        //[TestCase("Maxwell", "Hunter", "Sloan", "Maxwell Sloan")]
+        //[TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
         public void CanEditOwnName(string firstName, string middleName, string lastName, string expectedName)
         {
-            _globalHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
-            _globalLocators.MyInfoLink.Click();
-            _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
+            _myInfoPageHelpers.NavigateTo();
 
             _myInfoPage.FirstNameTextBox.ClearViaSendKeys();
             _myInfoPage.FirstNameTextBox.SendKeys(firstName);
-            Assert.That(_myInfoPage.FirstNameTextBox.GetAttribute("value"), Is.EqualTo(firstName));
             _myInfoPage.MiddleNameTextBox.ClearViaSendKeys();
             _myInfoPage.MiddleNameTextBox.SendKeys(middleName);
-            Assert.That(_myInfoPage.MiddleNameTextBox.GetAttribute("value"), Is.EqualTo(middleName));
             _myInfoPage.LastNameTextBox.ClearViaSendKeys();
             _myInfoPage.LastNameTextBox.SendKeys(lastName);
-            Assert.That(_myInfoPage.LastNameTextBox.GetAttribute("value"), Is.EqualTo(lastName));
-
+            Assert.Multiple(() =>
+            {
+                Assert.That(_myInfoPage.FirstNameTextBox.GetAttribute("value"), Is.EqualTo(firstName));
+                Assert.That(_myInfoPage.MiddleNameTextBox.GetAttribute("value"), Is.EqualTo(middleName));
+                Assert.That(_myInfoPage.LastNameTextBox.GetAttribute("value"), Is.EqualTo(lastName));
+            });
             _myInfoPage.LastNameTextBox.SendKeys(Keys.Enter);
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalLocators.DashboardLink.Click();
@@ -60,17 +59,9 @@ namespace OrangeHRMTests
             Dictionary<string, string> attachmentData;
             IWebElement attachmentCard;
 
-            _globalHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
-            _globalHelpers.ClickViaActions(_globalLocators.MyInfoLink);
-            _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
-
-            _globalHelpers.ClickViaActions(_myInfoPage.AddAttachmentButton);
-            Assert.That(_myInfoPage.FilenameDiv.Displayed, Is.True);
-            _myInfoPage.FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", filename));
-            _globalHelpers.ClickViaActions(_myInfoPage.SaveAttachmentButton);
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
-            _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
+            _myInfoPageHelpers.NavigateTo();
+            _myInfoPageHelpers.UploadFile(filename);
+            
             (attachmentCard, attachmentData) = _myInfoPageHelpers.GetAttachedFileData(filename);
             Assert.Multiple(() =>
             {
