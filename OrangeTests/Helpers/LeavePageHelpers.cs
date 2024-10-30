@@ -78,6 +78,24 @@ namespace OrangeHRMTests.Helpers
             return (false, "Not Found.", null);
         }
 
+        private (DateTime fromDate, DateTime? toDate) ParseRecordDates(IWebElement datesElement)
+        {
+            var dates = datesElement.Text.Split(" to ");
+            var fromDateStrings = dates[0].Split('-');
+            var fromDateAsString = $"{fromDateStrings[2]}/{fromDateStrings[1]}/{fromDateStrings[0]}";
+            var fromDate = DateTime.Parse(fromDateAsString);
+            DateTime? toDate = null;
+
+            if (dates.Length > 1)
+            {
+                var toDateStrings = dates[1].Split('-');
+                var toDateAsString = $"{toDateStrings[2]}/{toDateStrings[1]}/{toDateStrings[0]}";
+                toDate = DateTime.Parse(toDateAsString);
+            }
+
+            return (fromDate, toDate);
+        }
+
         public void ApplyForLeave(DateTime startDate, DateTime endDate)
         {
             _globalHelpers.LoginAs("admin", true);
@@ -104,26 +122,10 @@ namespace OrangeHRMTests.Helpers
             _leavePage.DurationSelectElement.Click();
             //_globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
             _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
+            _leavePage.CommentsTextArea.SendKeys("Personal leave/vacation");
             _leavePage.ApplyButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
         }
-
-        private (DateTime fromDate, DateTime? toDate) ParseRecordDates(IWebElement datesElement)
-        {
-            var dates = datesElement.Text.Split(" to ");
-            var fromDateStrings = dates[0].Split('-');
-            var fromDateAsString = $"{fromDateStrings[2]}/{fromDateStrings[1]}/{fromDateStrings[0]}";
-            var fromDate = DateTime.Parse(fromDateAsString);
-            DateTime? toDate = null;
-
-            if (dates.Length > 1)
-            {
-                var toDateStrings = dates[1].Split('-');
-                var toDateAsString = $"{toDateStrings[2]}/{toDateStrings[1]}/{toDateStrings[0]}";
-                toDate = DateTime.Parse(toDateAsString);
-            }
-
-            return (fromDate, toDate);
-        }
+        
     }
 }

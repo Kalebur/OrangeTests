@@ -24,8 +24,8 @@ namespace OrangeHRMTests
             _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers, _globalLocators);
         }
 
-        //[TestCase(1)]
-        //[TestCase(5)]
+        [TestCase(1)]
+        [TestCase(5)]
         [TestCase(14)]
         public void CanApplyForLeave(int duration)
         {
