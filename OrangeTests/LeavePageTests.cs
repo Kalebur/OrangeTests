@@ -36,19 +36,15 @@ namespace OrangeHRMTests
 
             // Check that record exists in main Leave List and My Leave list.
             _leavePage.LeaveListLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.LeaveListHeader.Displayed);
-            Assert.That(_leavePage.RecordCountSpan.Displayed, Is.True);
-            Task.Delay(1500);
+            _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             Assert.Multiple(() =>
             {
                 Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Pending"), $"No record found for range {startDate.ToString("yyyy-MM-dd")} - {endDate.ToString("yyyy-MM-dd")}");
+                Assert.That(leaveStatus, Is.EqualTo("Pending"), $"No record found for range {startDate.ToString("yyyy-MM-dd")} to {endDate.ToString("yyyy-MM-dd")}");
             });
             _leavePage.MyLeaveLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.LeaveListHeader.Displayed);
-            Assert.That(_leavePage.RecordCountSpan.Displayed, Is.True);
-            Task.Delay(1500);
+            _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             Assert.Multiple(() =>
             {
@@ -60,7 +56,6 @@ namespace OrangeHRMTests
             _leavePage.CancelLeaveButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
-            Task.Delay(1500);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             Assert.Multiple(() =>
             {

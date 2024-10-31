@@ -183,6 +183,7 @@ namespace OrangeHRMTests.Helpers
             for (int i = 0; i < numUsersToAdd; i++)
             {
                 var newUser = _globalHelpers.GenerateRandomUser();
+                _globalHelpers.Wait.Until(d => _adminPage.AddUserButton.Displayed);
                 _adminPage.AddUserButton.ClickViaJavaScript();
                 _globalHelpers.Wait.Until(d => _adminPage.ConfirmPasswordTextBox.Displayed);
                 AddUser(newUser);

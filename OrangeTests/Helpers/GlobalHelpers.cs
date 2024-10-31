@@ -8,13 +8,22 @@ using System;
 
 namespace OrangeHRMTests.Helpers
 {
-    public class GlobalHelpers(IWebDriver driver, Random random, GlobalLocators globalLocators)
+    public class GlobalHelpers
     {
-        private readonly IWebDriver _driver = driver;
-        private readonly Actions _actions = new(driver);
-        private readonly Random _random = random;
-        private readonly GlobalLocators _globalLocators = globalLocators;
+        private readonly IWebDriver _driver;
+        private readonly Actions _actions;
+        private readonly Random _random;
+        private readonly GlobalLocators _globalLocators;
         private readonly LoginHelpers _loginHelpers;
+
+        public GlobalHelpers(IWebDriver driver, Random random, GlobalLocators globalLocators)
+        {
+            _driver = driver;
+            _actions = new(driver);
+            _random = random;
+            _globalLocators = globalLocators;
+            _loginHelpers = new(_driver, new LoginPage(_driver), this, _globalLocators);
+        }
 
         public WebDriverWait Wait => new(_driver, TimeSpan.FromSeconds(10));
 
@@ -159,11 +168,6 @@ namespace OrangeHRMTests.Helpers
 
             return passwords[_random.Next(passwords.Count)];
         }
-
-        //public void SelectElementByText(IList<IWebElement> collection, string targetText)
-        //{
-        //    collection.Where(item => item.Text == targetText).First().Click();
-        //}
 
         public IList<IWebElement> GetRowCells(IWebElement tableRow)
         {
