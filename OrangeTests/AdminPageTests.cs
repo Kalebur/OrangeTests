@@ -23,29 +23,26 @@ namespace OrangeHRMTests
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, random, _globalLocators);
             _adminPage = new AdminPage(_driver);
-            _adminHelpers = new AdminHelpers(_driver, _adminPage, _globalHelpers, random);
+            _adminHelpers = new AdminHelpers(_driver, _adminPage, _globalHelpers, _globalLocators, random);
         }
 
-        [Test]
-        public void CanSearchForUser()
-        {
-            _globalHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
-            _globalLocators.AdminLink.Click();
-            _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
-            Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
-            _adminHelpers.SearchForUserByUsername("DingleChingle");
-            Assert.That(_adminHelpers
-                .GetRecordCount(), Is.EqualTo(0) | Is.EqualTo(1));
-        }
+        //[Test]
+        //public void CanSearchForUserByUsername()
+        //{
+        //    _globalHelpers.LoginAs("admin");
+        //    _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
+        //    _globalLocators.AdminLink.Click();
+        //    _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+        //    Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
+        //    _adminHelpers.SearchForUserByUsername(_adminHelpers.GetTestUsername());
+        //    Assert.That(_adminHelpers
+        //        .GetRecordCount(), Is.AtLeast(1));
+        //}
 
         [Test]
-        public void CanEditUser()
+        public void CanSearchForAndEditUsers()
         {
-            _globalHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
-            _globalLocators.AdminLink.Click();
-            _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+            _adminHelpers.NavigateToAdminPage();
             Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
 
             var username = _adminHelpers.GetTestUsername();
@@ -54,20 +51,13 @@ namespace OrangeHRMTests
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
 
             var currentUserData = _adminHelpers.ParseUserTableRow(_adminPage.Users.First());
-            var newUserData = _globalHelpers.GenerateRandomUser();
-            _adminHelpers.EditUser(newUserData);
-            _adminHelpers.SearchForUserByUsername(newUserData.Username);
+            var testUserData = _globalHelpers.GenerateRandomUser();
+            _adminHelpers.EditUser(testUserData);
+            _adminHelpers.SearchForUserByUsername(testUserData.Username);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(1));
 
             var updatedUserData = _adminHelpers.ParseUserTableRow(_adminPage.Users.First());
-            Assert.Multiple(() =>
-            {
-                Assert.That(updatedUserData.Username, Is.EqualTo(newUserData.Username));
-                Assert.That(updatedUserData.Employee.FirstName, Is.EqualTo(newUserData.Employee.FirstName));
-                Assert.That(updatedUserData.Employee.LastName, Is.EqualTo(newUserData.Employee.LastName));
-                Assert.That(updatedUserData.UserRole, Is.EqualTo(newUserData.UserRole));
-                Assert.That(updatedUserData.IsEnabled, Is.EqualTo(newUserData.IsEnabled));
-            });
+            _adminHelpers.AssertUpdateWasSuccessful(testUserData, updatedUserData);
 
             _globalHelpers.DeleteRecord(_adminPage.Users.First());
             _adminPage.SearchButton.Click();
@@ -78,10 +68,7 @@ namespace OrangeHRMTests
         [Test]
         public void CanAddUser()
         {
-            _globalHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
-            _globalLocators.AdminLink.ClickViaJavaScript();
-            _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+            _adminHelpers.NavigateToAdminPage();
             Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
 
             _adminPage.AddUserButton.ClickViaJavaScript();
@@ -103,10 +90,7 @@ namespace OrangeHRMTests
         [Test]
         public void CanDeleteUser()
         {
-            _globalHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
-            _globalLocators.AdminLink.Click();
-            _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
+            _adminHelpers.NavigateToAdminPage();
             Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
 
             string username = _adminHelpers.GetTestUsername();
