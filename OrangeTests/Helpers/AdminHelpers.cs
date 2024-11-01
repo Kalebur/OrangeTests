@@ -30,7 +30,7 @@ namespace OrangeHRMTests.Helpers
 
         public IWebElement GetEditUserButton(IWebElement userRow)
         {
-            return userRow.FindElement(By.XPath("//i[contains(@class, 'bi-pencil-fill')]/parent::button"));
+            return userRow.FindElement(By.XPath(".//i[contains(@class, 'bi-pencil-fill')]/parent::button"));
         }
 
         public int GetRecordCount()
@@ -107,8 +107,6 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.Wait.Until(d => _adminPage.UserRoleDropdownOptions.First().Displayed);
             _adminPage.UserRoleDropdownOptions.SelectItemByText(roleText);
         }
-
-
 
         public User ParseUserTableRow(IWebElement tableRow)
         {
@@ -212,7 +210,7 @@ namespace OrangeHRMTests.Helpers
             _adminPage.UsernameTextBox.SendKeys(user.Username);
             _adminPage.PasswordTextBox.SendKeys(user.Password);
             _adminPage.ConfirmPasswordTextBox.SendKeys(user.Password);
-            _adminPage.SaveUserButton.ClickViaJavaScript();
+            _adminPage.ConfirmPasswordTextBox.Submit();
         }
 
         public void NavigateToAdminPage()
