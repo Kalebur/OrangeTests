@@ -24,9 +24,11 @@ namespace OrangeHRMTests.Helpers
                 { 11, "November" },
                 { 12, "December" },
             };
+        private string dateFormatString = "yyyy-dd-MM";
 
         public void SelectRandomLeaveType()
         {
+            _globalHelpers.Wait.Until(d => _leavePage.LeaveTypeSelectElement.Displayed);
             _leavePage.LeaveTypeSelectElement.Click();
             _globalHelpers.SelectRandomElement(_leavePage.DropdownOptions);
         }
@@ -102,11 +104,11 @@ namespace OrangeHRMTests.Helpers
             SelectRandomLeaveType();
 
             // Select Start Date
-            _leavePage.FromDateInputField.SendKeys(startDate.ToString("yyyy-dd-MM"));
+            _leavePage.FromDateInputField.SendKeys(startDate.ToString(dateFormatString));
 
             // Select End Date
             _leavePage.ToDateInputField.ClearViaSendKeys();
-            _leavePage.ToDateInputField.SendKeys(endDate.ToString("yyyy-dd-MM"));
+            _leavePage.ToDateInputField.SendKeys(endDate.ToString(dateFormatString));
             _leavePage.ToDateInputField.SendKeys(Keys.Tab);
 
             _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
@@ -130,13 +132,23 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
         }
 
-        internal void AssertRecordExistsWithStatus(bool recordExists, IWebElement leaveRecord, string leaveStatus, string expectedStatus)
+        public void AssertRecordExistsWithStatus(bool recordExists, IWebElement leaveRecord, string leaveStatus, string expectedStatus)
         {
             Assert.Multiple(() =>
             {
                 Assert.That(recordExists, Is.True);
                 Assert.That(leaveStatus, Is.EqualTo(expectedStatus));
             });
+        }
+
+        public void FindRecordByDateRangeAndStatus(DateTime startDate, DateTime endDate, string leaveStatus)
+        {
+            _leavePage.FromDateInputField.ClearViaSendKeys();
+            _leavePage.FromDateInputField.SendKeys(startDate.ToString(dateFormatString));
+            _leavePage.ToDateInputField.ClearViaSendKeys();
+            _leavePage.ToDateInputField.SendKeys(endDate.ToString(dateFormatString));
+            _leavePage.FromDateInputField.Submit();
+            _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
         }
     }
 }

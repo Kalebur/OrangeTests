@@ -26,6 +26,18 @@ namespace OrangeHRMTests.Extensions
             elements[random.Next(elements.Count)].Click();
         }
 
+        public static void RemoveElementFromDOM(this IWebElement element)
+        {
+            IJavaScriptExecutor javaScriptExecutor = (IJavaScriptExecutor)_cachedDriver;
+            javaScriptExecutor.ExecuteScript("arguments[0].scrollIntoView(true);", element);
+            javaScriptExecutor.ExecuteScript("arguments[0].remove();", element);
+        }
+
+        public static IWebElement GetParentElement(this IWebElement element)
+        {
+            return element.FindElement(By.XPath("./.."));
+        }
+
         public static void SelectItemByText(this IList<IWebElement> elements, string text)
         {
             elements.Where(element => element.Text == text).First().Click();

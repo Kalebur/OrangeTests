@@ -43,6 +43,7 @@ namespace OrangeHRMTests
             _leavePage.MyLeaveLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
             _leavePageHelpers.FindRecordByDateRangeAndStatus(startDate, endDate, "Pending");
+            Task.Delay(5000);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
             _leavePageHelpers.AssertRecordExistsWithStatus(recordExists, leaveRecord, leaveStatus, "Pending");
 
