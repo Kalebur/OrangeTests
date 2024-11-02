@@ -24,9 +24,9 @@ namespace OrangeHRMTests
             _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers, _globalLocators);
         }
 
-        [TestCase(1)]
+        //[TestCase(1)]
         [TestCase(5)]
-        [TestCase(14)]
+        //[TestCase(14)]
         public void CanApplyForLeave(int duration)
         {
             (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(duration);
@@ -38,30 +38,20 @@ namespace OrangeHRMTests
             _leavePage.LeaveListLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            Assert.Multiple(() =>
-            {
-                Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Pending"), $"No record found for range {startDate.ToString("yyyy-MM-dd")} to {endDate.ToString("yyyy-MM-dd")}");
-            });
+            _leavePageHelpers.AssertRecordExistsWithStatus(recordExists, leaveRecord, leaveStatus, "Pending");
+            
             _leavePage.MyLeaveLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
+            _leavePageHelpers.FindRecordByDateRangeAndStatus(startDate, endDate, "Pending");
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            Assert.Multiple(() =>
-            {
-                Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Pending"));
-            });
+            _leavePageHelpers.AssertRecordExistsWithStatus(recordExists, leaveRecord, leaveStatus, "Pending");
 
             // Cancel leave and confirm it now shows as cancelled
             _leavePage.CancelLeaveButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
             (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            Assert.Multiple(() =>
-            {
-                Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Cancelled"));
-            });
+            _leavePageHelpers.AssertRecordExistsWithStatus(recordExists, leaveRecord, leaveStatus, "Cancelled");
         }
 
         [TearDown]

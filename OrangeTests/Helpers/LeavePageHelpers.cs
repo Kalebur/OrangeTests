@@ -111,11 +111,9 @@ namespace OrangeHRMTests.Helpers
 
             _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
             _leavePage.PartialDaysSelectElement.Click();
-            //_globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
             _leavePage.PartialDaysOptions.SelectItemByText("All Days");
             _globalHelpers.Wait.Until(d => _leavePage.DurationSelectElement.Displayed);
             _leavePage.DurationSelectElement.Click();
-            //_globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
             _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
             _leavePage.CommentsTextArea.SendKeys("Personal leave/vacation");
             _leavePage.ApplyButton.Submit();
@@ -130,6 +128,15 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.Wait.Until(d => _leavePage.ApplyLink.Displayed);
             _leavePage.ApplyLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
+        }
+
+        internal void AssertRecordExistsWithStatus(bool recordExists, IWebElement leaveRecord, string leaveStatus, string expectedStatus)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(recordExists, Is.True);
+                Assert.That(leaveStatus, Is.EqualTo(expectedStatus));
+            });
         }
     }
 }

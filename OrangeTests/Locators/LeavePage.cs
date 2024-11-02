@@ -40,5 +40,6 @@ namespace OrangeHRMTests.Locators
         public IWebElement CancelLeaveButton => _driver.FindElement(By.XPath("//button[contains(@class, 'oxd-button--label-warn')]"));
         public IWebElement DropdownListBox => _driver.FindElement(By.XPath("//div[@role='listbox']"));
         public List<IWebElement> DropdownOptions => DropdownListBox.FindElements(By.XPath(".//div[@role='option']")).Skip(1).ToList();
+        public List<IWebElement> RemoveStatusButton => _driver.FindElements(By.XPath("//form//i[contains(@class, 'bi-x')]")).ToList();
     }
 }
