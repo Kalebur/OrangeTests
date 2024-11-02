@@ -28,7 +28,7 @@ namespace OrangeHRMTests.Helpers
         public void SelectRandomLeaveType()
         {
             _leavePage.LeaveTypeSelectElement.Click();
-            _globalHelpers.SelectRandomElement(_leavePage.LeaveTypeOptions);
+            _globalHelpers.SelectRandomElement(_leavePage.DropdownOptions);
         }
 
         public (DateTime startDate, DateTime endDate) GetRandomLeaveDates(int duration)
@@ -98,12 +98,7 @@ namespace OrangeHRMTests.Helpers
 
         public void ApplyForLeave(DateTime startDate, DateTime endDate)
         {
-            _globalHelpers.LoginAs("admin", true);
-            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
-            _globalLocators.LeaveLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.ApplyLink.Displayed);
-            _leavePage.ApplyLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
+            NavigateToLeavePage();
             SelectRandomLeaveType();
 
             // Select Start Date
@@ -123,9 +118,18 @@ namespace OrangeHRMTests.Helpers
             //_globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
             _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
             _leavePage.CommentsTextArea.SendKeys("Personal leave/vacation");
-            _leavePage.ApplyButton.Click();
+            _leavePage.ApplyButton.Submit();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
         }
-        
+
+        private void NavigateToLeavePage()
+        {
+            _globalHelpers.LoginAs("admin", true);
+            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
+            _globalLocators.LeaveLink.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.ApplyLink.Displayed);
+            _leavePage.ApplyLink.Click();
+            _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
+        }
     }
 }
