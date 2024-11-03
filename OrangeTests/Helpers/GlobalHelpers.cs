@@ -15,6 +15,7 @@ namespace OrangeHRMTests.Helpers
         private readonly Random _random;
         private readonly GlobalLocators _globalLocators;
         private readonly LoginHelpers _loginHelpers;
+        public readonly string dateFormatString;
 
         public GlobalHelpers(IWebDriver driver, Random random, GlobalLocators globalLocators)
         {
@@ -23,6 +24,7 @@ namespace OrangeHRMTests.Helpers
             _random = random;
             _globalLocators = globalLocators;
             _loginHelpers = new(_driver, new LoginPage(_driver), this, _globalLocators);
+            dateFormatString = "yyyy-dd-MM";
         }
 
         public WebDriverWait Wait => new(_driver, TimeSpan.FromSeconds(10));
@@ -193,20 +195,22 @@ namespace OrangeHRMTests.Helpers
 
         public void LoginAs(string username, bool maximizeWindow = false)
         {
-            var loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), this, _globalLocators);
-            loginHelpers.LoginAs(username, maximizeWindow);
+            _loginHelpers.LoginAs(username, maximizeWindow);
         }
 
         public void LoginWithCredentials(string username, string password, bool maximizeWindow = false)
         {
-            var loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), this, _globalLocators);
-            loginHelpers.LoginWithCredentials(username, password, maximizeWindow);
+            _loginHelpers.LoginWithCredentials(username, password, maximizeWindow);
         }
 
         public void Logout()
         {
-            var loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), this, _globalLocators);
-            loginHelpers.Logout();
+            _loginHelpers.Logout();
+        }
+
+        public string GetDisplayedUserName()
+        {
+            return _globalLocators.UserName.Text;
         }
     }
 

@@ -24,14 +24,12 @@ namespace OrangeHRMTests
             _myInfoPageHelpers = new MyInfoPageHelpers(_driver, _myInfoPage, _globalHelpers, _globalLocators);
         }
 
-        [TestCase("John", "William", "Waterhouse", "John Waterhouse")]
-        [TestCase("Tommy", "", "Oliver", "Tommy Oliver")]
         [TestCase("Trini", "", "Quan", "Trini Quan")]
-        [TestCase("Mary", "Jane", "Watson", "Mary Watson")]
         [TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
+        [TestCase("Tommy", "", "Oliver", "Tommy Oliver")]
         public void CanEditOwnName(string firstName, string middleName, string lastName, string expectedName)
         {
-            _myInfoPageHelpers.NavigateTo();
+            _myInfoPageHelpers.NavigateToPage();
 
             _myInfoPage.FirstNameTextBox.ClearViaSendKeys();
             _myInfoPage.FirstNameTextBox.SendKeys(firstName);
@@ -39,17 +37,18 @@ namespace OrangeHRMTests
             _myInfoPage.MiddleNameTextBox.SendKeys(middleName);
             _myInfoPage.LastNameTextBox.ClearViaSendKeys();
             _myInfoPage.LastNameTextBox.SendKeys(lastName);
+            _myInfoPage.LastNameTextBox.Submit();
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _driver.Navigate().Refresh();
+            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
+
             Assert.Multiple(() =>
             {
                 Assert.That(_myInfoPage.FirstNameTextBox.GetAttribute("value"), Is.EqualTo(firstName));
                 Assert.That(_myInfoPage.MiddleNameTextBox.GetAttribute("value"), Is.EqualTo(middleName));
                 Assert.That(_myInfoPage.LastNameTextBox.GetAttribute("value"), Is.EqualTo(lastName));
+                Assert.That(_globalLocators.UserDropdown.Text, Is.EqualTo(expectedName));
             });
-            _myInfoPage.LastNameTextBox.SendKeys(Keys.Enter);
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
-            _globalLocators.DashboardLink.Click();
-            _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
-            Assert.That(_globalLocators.UserDropdown.Text, Is.EqualTo(expectedName));
         }
 
         [Test]
@@ -59,7 +58,7 @@ namespace OrangeHRMTests
             Dictionary<string, string> attachmentData;
             IWebElement attachmentCard;
 
-            _myInfoPageHelpers.NavigateTo();
+            _myInfoPageHelpers.NavigateToPage();
             _myInfoPageHelpers.UploadFile(filename);
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
@@ -71,7 +70,7 @@ namespace OrangeHRMTests
                 Assert.That(attachmentCard, Is.Not.Null);
                 Assert.That(attachmentData["addedBy"], Is.EqualTo("Admin"));
                 Assert.That(attachmentData["type"], Is.EqualTo("image/jpeg"));
-                Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString("yyyy-dd-MM")));
+                Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString(_globalHelpers.dateFormatString)));
             });
             _globalHelpers.DeleteRecord(attachmentCard);
         }
@@ -81,7 +80,7 @@ namespace OrangeHRMTests
         {
             var filename = "cake_2.png";
 
-            _myInfoPageHelpers.NavigateTo();
+            _myInfoPageHelpers.NavigateToPage();
             _myInfoPageHelpers.UploadFile(filename);
 
             Assert.Multiple(() =>

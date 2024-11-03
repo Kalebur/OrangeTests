@@ -27,8 +27,9 @@ namespace OrangeHRMTests.Helpers
 
         public void SelectRandomLeaveType()
         {
+            _globalHelpers.Wait.Until(d => _leavePage.LeaveTypeSelectElement.Displayed);
             _leavePage.LeaveTypeSelectElement.Click();
-            _globalHelpers.SelectRandomElement(_leavePage.LeaveTypeOptions);
+            _globalHelpers.SelectRandomElement(_leavePage.DropdownOptions);
         }
 
         public (DateTime startDate, DateTime endDate) GetRandomLeaveDates(int duration)
@@ -63,19 +64,26 @@ namespace OrangeHRMTests.Helpers
             _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }
 
-        public (bool recordExists, string leaveStatus, IWebElement leaveRecord) GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate)
+        public List<IWebElement> GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate, string leaveStatus, bool matchEmployeeName = false)
         {
+            var matchingRecords = new List<IWebElement>();
             foreach (var record in _leavePage.LeaveRecords)
             {
                 var recordData = _globalHelpers.GetRowCells(record);
                 (var fromDate, var toDate) = ParseRecordDates(recordData[1]);
-                if (fromDate == startDate && toDate == endDate)
+                if (!(fromDate == startDate && toDate == endDate)) continue;
+                if (!recordData[6].Text.Contains(leaveStatus)) continue;
+                if (matchEmployeeName)
                 {
-                    return (true, recordData[6].Text.Split(' ')[0], record);
+                    var firstAndLastName = _globalLocators.UserName.Text.Split(' ');
+                    if (!recordData[2].Text.Contains(firstAndLastName[0]) &&
+                        !recordData[2].Text.Contains(firstAndLastName[1])) continue;
                 }
+
+                matchingRecords.Add(record);
             }
 
-            return (false, "Not Found.", null);
+            return matchingRecords;
         }
 
         private (DateTime fromDate, DateTime? toDate) ParseRecordDates(IWebElement datesElement)
@@ -98,34 +106,58 @@ namespace OrangeHRMTests.Helpers
 
         public void ApplyForLeave(DateTime startDate, DateTime endDate)
         {
+            NavigateToLeavePage();
+            SelectRandomLeaveType();
+
+            // Select Start Date
+            _leavePage.FromDateInputField.SendKeys(startDate.ToString(_globalHelpers.dateFormatString));
+
+            // Select End Date
+            _leavePage.ToDateInputField.ClearViaSendKeys();
+            _leavePage.ToDateInputField.SendKeys(endDate.ToString(_globalHelpers.dateFormatString));
+            _leavePage.ToDateInputField.SendKeys(Keys.Tab);
+
+            _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
+            _leavePage.PartialDaysSelectElement.Click();
+            _leavePage.PartialDaysOptions.SelectItemByText("All Days");
+            _globalHelpers.Wait.Until(d => _leavePage.DurationSelectElement.Displayed);
+            _leavePage.DurationSelectElement.Click();
+            _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
+            _leavePage.CommentsTextArea.SendKeys("Personal leave/vacation");
+            _leavePage.ApplyButton.Submit();
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+        }
+
+        private void NavigateToLeavePage()
+        {
             _globalHelpers.LoginAs("admin", true);
             _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
             _globalLocators.LeaveLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.ApplyLink.Displayed);
             _leavePage.ApplyLink.Click();
             _globalHelpers.Wait.Until(d => _leavePage.ApplyButton.Displayed);
-            SelectRandomLeaveType();
-
-            // Select Start Date
-            _leavePage.FromDateInputField.SendKeys(startDate.ToString("yyyy-dd-MM"));
-
-            // Select End Date
-            _leavePage.ToDateInputField.ClearViaSendKeys();
-            _leavePage.ToDateInputField.SendKeys(endDate.ToString("yyyy-dd-MM"));
-            _leavePage.ToDateInputField.SendKeys(Keys.Tab);
-
-            _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
-            _leavePage.PartialDaysSelectElement.Click();
-            //_globalHelpers.SelectElementByText(_leavePage.PartialDaysOptions, "All Days");
-            _leavePage.PartialDaysOptions.SelectItemByText("All Days");
-            _globalHelpers.Wait.Until(d => _leavePage.DurationSelectElement.Displayed);
-            _leavePage.DurationSelectElement.Click();
-            //_globalHelpers.SelectElementByText(_leavePage.DurationOptions, "Half Day - Morning");
-            _leavePage.DurationOptions.SelectItemByText("Half Day - Morning");
-            _leavePage.CommentsTextArea.SendKeys("Personal leave/vacation");
-            _leavePage.ApplyButton.Click();
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
         }
-        
+
+        public void AssertRecordExistsWithStatus(bool recordExists, IWebElement leaveRecord, string leaveStatus, string expectedStatus)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(recordExists, Is.True);
+                Assert.That(leaveStatus, Is.EqualTo(expectedStatus));
+            });
+        }
+
+        public void GotoLeaveList()
+        {
+            _leavePage.LeaveListLink.Click();
+            _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
+        }
+
+        public void CancelLeave()
+        {
+            _leavePage.CancelLeaveButton.Click();
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
+        }
     }
 }

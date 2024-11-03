@@ -11,19 +11,26 @@ namespace OrangeHRMTests.Helpers
         private readonly IWebDriver _driver;
         private readonly AdminPage _adminPage;
         private readonly GlobalHelpers _globalHelpers;
+        private readonly GlobalLocators _globalLocators;
         private readonly Random _random;
 
-        public AdminHelpers(IWebDriver driver, AdminPage adminPage, GlobalHelpers globalHelpers, Random random)
+        public AdminHelpers(
+            IWebDriver driver, 
+            AdminPage adminPage, 
+            GlobalHelpers globalHelpers,
+            GlobalLocators globalLocators, 
+            Random random)
         {
             _driver = driver;
             _adminPage = adminPage;
             _globalHelpers = globalHelpers;
+            _globalLocators = globalLocators;
             _random = random;
         }
 
         public IWebElement GetEditUserButton(IWebElement userRow)
         {
-            return userRow.FindElement(By.XPath("//i[contains(@class, 'bi-pencil-fill')]/parent::button"));
+            return userRow.FindElement(By.XPath(".//i[contains(@class, 'bi-pencil-fill')]/parent::button"));
         }
 
         public int GetRecordCount()
@@ -64,14 +71,18 @@ namespace OrangeHRMTests.Helpers
             SetEmployeeNameFromField(newUser.Employee, nameField);
             nameField.Click();
             SelectUserStatus(newUser.IsEnabled);
+            CompleteUserFormAs(newUser);
+        }
+
+        private void CompleteUserFormAs(User newUser)
+        {
             _adminPage.UsernameTextBox.ClearViaSendKeys();
             _adminPage.UsernameTextBox.SendKeys(newUser.Username);
             _adminPage.ChangePasswordCheckBox.Click();
             _globalHelpers.Wait.Until(d => _adminPage.PasswordTextBox.Displayed);
             _adminPage.PasswordTextBox.SendKeys(newUser.Password);
             _adminPage.ConfirmPasswordTextBox.SendKeys(newUser.Password);
-
-            _adminPage.SaveUserButton.Click();
+            _adminPage.ConfirmPasswordTextBox.Submit();
             _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
         }
 
@@ -96,8 +107,6 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.Wait.Until(d => _adminPage.UserRoleDropdownOptions.First().Displayed);
             _adminPage.UserRoleDropdownOptions.SelectItemByText(roleText);
         }
-
-
 
         public User ParseUserTableRow(IWebElement tableRow)
         {
@@ -201,7 +210,27 @@ namespace OrangeHRMTests.Helpers
             _adminPage.UsernameTextBox.SendKeys(user.Username);
             _adminPage.PasswordTextBox.SendKeys(user.Password);
             _adminPage.ConfirmPasswordTextBox.SendKeys(user.Password);
-            _adminPage.SaveUserButton.ClickViaJavaScript();
+            _adminPage.ConfirmPasswordTextBox.Submit();
+        }
+
+        public void NavigateToAdminPage()
+        {
+            _globalHelpers.LoginAs("admin");
+            _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
+            _globalLocators.AdminLink.Click();
+            _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
+        }
+
+        public void AssertUpdateWasSuccessful(User testUserData, User updatedUserData)
+        {
+            Assert.Multiple(() =>
+            {
+                Assert.That(updatedUserData.Username, Is.EqualTo(testUserData.Username));
+                Assert.That(updatedUserData.Employee.FirstName, Is.EqualTo(testUserData.Employee.FirstName));
+                Assert.That(updatedUserData.Employee.LastName, Is.EqualTo(testUserData.Employee.LastName));
+                Assert.That(updatedUserData.UserRole, Is.EqualTo(testUserData.UserRole));
+                Assert.That(updatedUserData.IsEnabled, Is.EqualTo(testUserData.IsEnabled));
+            });
         }
     }
 }

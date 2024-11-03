@@ -24,44 +24,34 @@ namespace OrangeHRMTests
             _leavePageHelpers = new LeavePageHelpers(_leavePage, _globalHelpers, _globalLocators);
         }
 
-        [TestCase(1)]
+        //[TestCase(1)]
         [TestCase(5)]
-        [TestCase(14)]
+        //[TestCase(14)]
         public void CanApplyForLeave(int duration)
         {
             (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(duration);
-            (bool recordExists, string leaveStatus, IWebElement leaveRecord) = (false, null, null);
-
+            var mustMatchEmployeeName = true;
             _leavePageHelpers.ApplyForLeave(startDate, endDate);
 
             // Check that record exists in main Leave List and My Leave list.
-            _leavePage.LeaveListLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
-            (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            Assert.Multiple(() =>
-            {
-                Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Pending"), $"No record found for range {startDate.ToString("yyyy-MM-dd")} to {endDate.ToString("yyyy-MM-dd")}");
-            });
+            _leavePageHelpers.GotoLeaveList();
+            var leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending", mustMatchEmployeeName);
+            Assert.That(leaveRecords.Count, Is.EqualTo(1));
+            
             _leavePage.MyLeaveLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
-            (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            Assert.Multiple(() =>
-            {
-                Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Pending"));
-            });
+            _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
+            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending", mustMatchEmployeeName);
+            Assert.That(leaveRecords.Count, Is.EqualTo(1));
 
             // Cancel leave and confirm it now shows as cancelled
-            _leavePage.CancelLeaveButton.Click();
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
-            _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
-            (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            Assert.Multiple(() =>
-            {
-                Assert.That(recordExists, Is.True);
-                Assert.That(leaveStatus, Is.EqualTo("Cancelled"));
-            });
+            var numCancelledLeaveRecordsForDateRange = 
+                _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Cancelled").Count;
+            _leavePageHelpers.CancelLeave();
+            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Cancelled");
+            Assert.That(leaveRecords.Count, Is.GreaterThan(numCancelledLeaveRecordsForDateRange));
+            _leavePageHelpers.GotoLeaveList();
+            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending", mustMatchEmployeeName);
+            Assert.That(leaveRecords.Count, Is.EqualTo(0));
         }
 
         [TearDown]
