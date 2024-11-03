@@ -15,6 +15,7 @@ namespace OrangeHRMTests.Helpers
         private readonly Random _random;
         private readonly GlobalLocators _globalLocators;
         private readonly LoginHelpers _loginHelpers;
+        public readonly string dateFormatString;
 
         public GlobalHelpers(IWebDriver driver, Random random, GlobalLocators globalLocators)
         {
@@ -23,6 +24,7 @@ namespace OrangeHRMTests.Helpers
             _random = random;
             _globalLocators = globalLocators;
             _loginHelpers = new(_driver, new LoginPage(_driver), this, _globalLocators);
+            dateFormatString = "yyyy-dd-MM";
         }
 
         public WebDriverWait Wait => new(_driver, TimeSpan.FromSeconds(10));

@@ -30,29 +30,28 @@ namespace OrangeHRMTests
         public void CanApplyForLeave(int duration)
         {
             (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(duration);
-            (bool recordExists, string leaveStatus, IWebElement leaveRecord) = (false, null, null);
-
             _leavePageHelpers.ApplyForLeave(startDate, endDate);
 
             // Check that record exists in main Leave List and My Leave list.
-            _leavePage.LeaveListLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
-            (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            _leavePageHelpers.AssertRecordExistsWithStatus(recordExists, leaveRecord, leaveStatus, "Pending");
+            _leavePageHelpers.GotoLeaveList();
+            var leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending");
+            Assert.That(leaveRecords.Count, Is.EqualTo(1));
             
             _leavePage.MyLeaveLink.Click();
-            _globalHelpers.Wait.Until(d => _leavePage.RecordCountSpan.Displayed);
-            _leavePageHelpers.FindRecordByDateRangeAndStatus(startDate, endDate, "Pending");
-            Task.Delay(5000);
-            (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            _leavePageHelpers.AssertRecordExistsWithStatus(recordExists, leaveRecord, leaveStatus, "Pending");
+            _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
+            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending");
+            Assert.That(leaveRecords.Count, Is.EqualTo(1));
 
             // Cancel leave and confirm it now shows as cancelled
+            var numCancelledLeaveRecordsForDateRange = 
+                _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Cancelled").Count;
             _leavePage.CancelLeaveButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
-            (recordExists, leaveStatus, leaveRecord) = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate);
-            _leavePageHelpers.AssertRecordExistsWithStatus(recordExists, leaveRecord, leaveStatus, "Cancelled");
+            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Cancelled");
+            Assert.That(leaveRecords.Count, Is.GreaterThan(numCancelledLeaveRecordsForDateRange));
+            _leavePageHelpers.GotoLeaveList();
+
         }
 
         [TearDown]

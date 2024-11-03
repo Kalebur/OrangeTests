@@ -24,7 +24,6 @@ namespace OrangeHRMTests.Helpers
                 { 11, "November" },
                 { 12, "December" },
             };
-        private string dateFormatString = "yyyy-dd-MM";
 
         public void SelectRandomLeaveType()
         {
@@ -65,19 +64,20 @@ namespace OrangeHRMTests.Helpers
             _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }
 
-        public (bool recordExists, string leaveStatus, IWebElement leaveRecord) GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate)
+        public List<IWebElement> GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate, string leaveStatus)
         {
+            var matchingRecords = new List<IWebElement>();
             foreach (var record in _leavePage.LeaveRecords)
             {
                 var recordData = _globalHelpers.GetRowCells(record);
                 (var fromDate, var toDate) = ParseRecordDates(recordData[1]);
                 if (fromDate == startDate && toDate == endDate)
                 {
-                    return (true, recordData[6].Text.Split(' ')[0], record);
+                    if (recordData[6].Text.Contains(leaveStatus)) matchingRecords.Add(record);
                 }
             }
 
-            return (false, "Not Found.", null);
+            return matchingRecords;
         }
 
         private (DateTime fromDate, DateTime? toDate) ParseRecordDates(IWebElement datesElement)
@@ -104,11 +104,11 @@ namespace OrangeHRMTests.Helpers
             SelectRandomLeaveType();
 
             // Select Start Date
-            _leavePage.FromDateInputField.SendKeys(startDate.ToString(dateFormatString));
+            _leavePage.FromDateInputField.SendKeys(startDate.ToString(_globalHelpers.dateFormatString));
 
             // Select End Date
             _leavePage.ToDateInputField.ClearViaSendKeys();
-            _leavePage.ToDateInputField.SendKeys(endDate.ToString(dateFormatString));
+            _leavePage.ToDateInputField.SendKeys(endDate.ToString(_globalHelpers.dateFormatString));
             _leavePage.ToDateInputField.SendKeys(Keys.Tab);
 
             _globalHelpers.Wait.Until(d => _leavePage.PartialDaysSelectElement.Displayed);
@@ -141,14 +141,20 @@ namespace OrangeHRMTests.Helpers
             });
         }
 
-        public void FindRecordByDateRangeAndStatus(DateTime startDate, DateTime endDate, string leaveStatus)
+        public void FindRecordsByDateRangeAndStatus(DateTime startDate, DateTime endDate, string leaveStatus)
         {
             _leavePage.FromDateInputField.ClearViaSendKeys();
-            _leavePage.FromDateInputField.SendKeys(startDate.ToString(dateFormatString));
+            _leavePage.FromDateInputField.SendKeys(startDate.ToString(_globalHelpers.dateFormatString));
             _leavePage.ToDateInputField.ClearViaSendKeys();
-            _leavePage.ToDateInputField.SendKeys(endDate.ToString(dateFormatString));
+            _leavePage.ToDateInputField.SendKeys(endDate.ToString(_globalHelpers.dateFormatString));
             _leavePage.FromDateInputField.Submit();
             _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
+        }
+
+        public void GotoLeaveList()
+        {
+            _leavePage.LeaveListLink.Click();
+            _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
         }
     }
 }
