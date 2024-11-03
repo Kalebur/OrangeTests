@@ -64,17 +64,23 @@ namespace OrangeHRMTests.Helpers
             _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }
 
-        public List<IWebElement> GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate, string leaveStatus)
+        public List<IWebElement> GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate, string leaveStatus, bool matchEmployeeName = false)
         {
             var matchingRecords = new List<IWebElement>();
             foreach (var record in _leavePage.LeaveRecords)
             {
                 var recordData = _globalHelpers.GetRowCells(record);
                 (var fromDate, var toDate) = ParseRecordDates(recordData[1]);
-                if (fromDate == startDate && toDate == endDate)
+                if (!(fromDate == startDate && toDate == endDate)) continue;
+                if (!recordData[6].Text.Contains(leaveStatus)) continue;
+                if (matchEmployeeName)
                 {
-                    if (recordData[6].Text.Contains(leaveStatus)) matchingRecords.Add(record);
+                    var firstAndLastName = _globalLocators.UserName.Text.Split(' ');
+                    if (!recordData[2].Text.Contains(firstAndLastName[0]) &&
+                        !recordData[2].Text.Contains(firstAndLastName[1])) continue;
                 }
+
+                matchingRecords.Add(record);
             }
 
             return matchingRecords;
@@ -141,20 +147,17 @@ namespace OrangeHRMTests.Helpers
             });
         }
 
-        public void FindRecordsByDateRangeAndStatus(DateTime startDate, DateTime endDate, string leaveStatus)
-        {
-            _leavePage.FromDateInputField.ClearViaSendKeys();
-            _leavePage.FromDateInputField.SendKeys(startDate.ToString(_globalHelpers.dateFormatString));
-            _leavePage.ToDateInputField.ClearViaSendKeys();
-            _leavePage.ToDateInputField.SendKeys(endDate.ToString(_globalHelpers.dateFormatString));
-            _leavePage.FromDateInputField.Submit();
-            _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
-        }
-
         public void GotoLeaveList()
         {
             _leavePage.LeaveListLink.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
+        }
+
+        public void CancelLeave()
+        {
+            _leavePage.CancelLeaveButton.Click();
+            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
         }
     }
 }

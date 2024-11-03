@@ -30,28 +30,28 @@ namespace OrangeHRMTests
         public void CanApplyForLeave(int duration)
         {
             (var startDate, var endDate) = _leavePageHelpers.GetRandomLeaveDates(duration);
+            var mustMatchEmployeeName = true;
             _leavePageHelpers.ApplyForLeave(startDate, endDate);
 
             // Check that record exists in main Leave List and My Leave list.
             _leavePageHelpers.GotoLeaveList();
-            var leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending");
+            var leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending", mustMatchEmployeeName);
             Assert.That(leaveRecords.Count, Is.EqualTo(1));
             
             _leavePage.MyLeaveLink.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
-            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending");
+            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending", mustMatchEmployeeName);
             Assert.That(leaveRecords.Count, Is.EqualTo(1));
 
             // Cancel leave and confirm it now shows as cancelled
             var numCancelledLeaveRecordsForDateRange = 
                 _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Cancelled").Count;
-            _leavePage.CancelLeaveButton.Click();
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
-            _globalHelpers.Wait.Until(d => _leavePage.LeaveRecords.Count > 0);
+            _leavePageHelpers.CancelLeave();
             leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Cancelled");
             Assert.That(leaveRecords.Count, Is.GreaterThan(numCancelledLeaveRecordsForDateRange));
             _leavePageHelpers.GotoLeaveList();
-
+            leaveRecords = _leavePageHelpers.GetLeaveRecordForDateRange(startDate, endDate, "Pending", mustMatchEmployeeName);
+            Assert.That(leaveRecords.Count, Is.EqualTo(0));
         }
 
         [TearDown]
