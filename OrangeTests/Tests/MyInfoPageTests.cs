@@ -4,7 +4,7 @@ using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Locators;
 
-namespace OrangeHRMTests
+namespace OrangeHRMTests.Tests
 {
     public class MyInfoPageTests
     {

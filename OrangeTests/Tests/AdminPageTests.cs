@@ -3,9 +3,8 @@ using OpenQA.Selenium.Chrome;
 using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Locators;
-using OrangeHRMTests.Models;
 
-namespace OrangeHRMTests
+namespace OrangeHRMTests.Tests
 {
     public class AdminPageTests
     {

@@ -4,7 +4,7 @@ using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Locators;
 
-namespace OrangeHRMTests
+namespace OrangeHRMTests.Tests
 {
     public class LeavePageTests
     {
@@ -37,14 +37,14 @@ namespace OrangeHRMTests
             _leavePageHelpers.GotoLeaveList();
             var leaveRecords = _leavePageHelpers.FindRecordsForDateRangeAndStatus(startDate, endDate, "Pending", mustMatchEmployeeName);
             Assert.That(leaveRecords.Count, Is.EqualTo(1));
-            
+
             _leavePage.MyLeaveLink.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
             leaveRecords = _leavePageHelpers.FindRecordsForDateRangeAndStatus(startDate, endDate, "Pending", mustMatchEmployeeName);
             Assert.That(leaveRecords.Count, Is.EqualTo(1));
 
             // Cancel leave and confirm it now shows as cancelled
-            var numCancelledLeaveRecordsForDateRange = 
+            var numCancelledLeaveRecordsForDateRange =
                 _leavePageHelpers.FindRecordsForDateRangeAndStatus(startDate, endDate, "Cancelled").Count;
             _leavePageHelpers.CancelLeave();
             leaveRecords = _leavePageHelpers.FindRecordsForDateRangeAndStatus(startDate, endDate, "Cancelled");

@@ -3,7 +3,7 @@ using OpenQA.Selenium.Chrome;
 using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Locators;
 
-namespace OrangeHRMTests
+namespace OrangeHRMTests.Tests
 {
     public class LoginPageTests
     {
@@ -45,7 +45,7 @@ namespace OrangeHRMTests
         }
 
         [Test]
-        public void InvalidLoginCredentials_FailsToLogin_AndProducesCorrectError()
+        public void Negative_CannotLoginWithInvalidCredentials()
         {
             _loginHelpers.LoginAs("default_user");
             _globalHelpers.Wait.Until(_driver => _loginPage.ErrorMessage.Displayed);
