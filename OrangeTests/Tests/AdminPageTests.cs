@@ -47,7 +47,7 @@ namespace OrangeHRMTests.Tests
 
             _globalHelpers.DeleteRecord(_adminPage.Users.First());
             _adminPage.SearchButton.Click();
-            _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
+            _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(0));
         }
 
@@ -69,7 +69,7 @@ namespace OrangeHRMTests.Tests
             {
                 Assert.That(_globalLocators.DashboardLink.GetAttribute("class"), Does.Contain("active"));
                 Assert.That(_globalLocators.UserName.Text,
-                    Is.EqualTo(newUser.Employee.FirstName + " " + newUser.Employee.LastName));
+                    Is.EqualTo($"{newUser.Employee.FirstName} {newUser.Employee.LastName}"));
             });
         }
 
@@ -86,7 +86,7 @@ namespace OrangeHRMTests.Tests
             _globalHelpers.DeleteRecord(_adminPage.Users.First());
             _adminPage.UsernameTextBox.ClearViaSendKeys();
             _adminHelpers.SearchForUserByUsername(username);
-            _globalHelpers.Wait.Until(d => _adminPage.RecordCountSpan.Displayed);
+            _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
             Assert.That(_adminHelpers.GetRecordCount(), Is.EqualTo(0));
         }
 

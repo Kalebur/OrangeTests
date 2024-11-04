@@ -9,7 +9,6 @@ namespace OrangeHRMTests.Tests
     {
         private IWebDriver _driver;
         private LoginPage _loginPage;
-        private LoginHelpers _loginHelpers;
         private GlobalLocators _globalLocators;
         private GlobalHelpers _globalHelpers;
 
@@ -20,34 +19,38 @@ namespace OrangeHRMTests.Tests
             _loginPage = new LoginPage(_driver);
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
-            _loginHelpers = new LoginHelpers(_driver, _loginPage, _globalHelpers, _globalLocators);
         }
 
         [Test]
         public void CanLogin()
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
-            Assert.That(_globalLocators.UserDropdown.Displayed, Is.True);
-            Assert.That(_globalLocators.DashboardLink.GetAttribute("class").Contains("active"), Is.True);
+            Assert.Multiple(() =>
+            {
+                Assert.That(_globalLocators.UserDropdown.Displayed, Is.True);
+                Assert.That(_globalLocators.DashboardLink.GetAttribute("class").Contains("active"), Is.True);
+            });
         }
 
         [Test]
         public void CanLogout()
         {
-            _loginHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin");
             _globalHelpers.Wait.Until(d => _globalLocators.UserDropdown.Displayed);
-            _loginHelpers.Logout();
-
-            Assert.That(_loginPage.UsernameTextBox.Displayed, Is.True);
-            Assert.That(_loginPage.PasswordTextBox.Displayed, Is.True);
-            Assert.That(_loginPage.LoginButton.Displayed, Is.True);
+            _globalHelpers.Logout();
+            Assert.Multiple(() =>
+            {
+                Assert.That(_loginPage.UsernameTextBox.Displayed, Is.True);
+                Assert.That(_loginPage.PasswordTextBox.Displayed, Is.True);
+                Assert.That(_loginPage.LoginButton.Displayed, Is.True);
+            });
         }
 
         [Test]
         public void Negative_CannotLoginWithInvalidCredentials()
         {
-            _loginHelpers.LoginAs("default_user");
+            _globalHelpers.LoginAs("default_user");
             _globalHelpers.Wait.Until(_driver => _loginPage.ErrorMessage.Displayed);
 
             Assert.Multiple(() =>

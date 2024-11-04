@@ -10,7 +10,6 @@ namespace OrangeHRMTests
         private IWebDriver _driver;
         private GlobalHelpers _globalHelpers;
         private GlobalLocators _globalLocators;
-        private LoginHelpers _loginHelpers;
 
         [SetUp]
         public void Setup()
@@ -18,7 +17,6 @@ namespace OrangeHRMTests
             _driver = new ChromeDriver();
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
-            _loginHelpers = new LoginHelpers(_driver, new LoginPage(_driver), _globalHelpers, _globalLocators);
         }
 
         //[Test]
