@@ -64,7 +64,7 @@ namespace OrangeHRMTests.Helpers
             _leavePage.Dates.SelectItemByText(date.Day.ToString());
         }
 
-        public List<IWebElement> GetLeaveRecordForDateRange(DateTime startDate, DateTime endDate, string leaveStatus, bool matchEmployeeName = false)
+        public List<IWebElement> FindRecordsForDateRangeAndStatus(DateTime startDate, DateTime endDate, string leaveStatus, bool matchEmployeeName = false)
         {
             var matchingRecords = new List<IWebElement>();
             foreach (var record in _leavePage.LeaveRecords)

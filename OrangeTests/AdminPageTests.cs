@@ -26,19 +26,6 @@ namespace OrangeHRMTests
             _adminHelpers = new AdminHelpers(_driver, _adminPage, _globalHelpers, _globalLocators, random);
         }
 
-        //[Test]
-        //public void CanSearchForUserByUsername()
-        //{
-        //    _globalHelpers.LoginAs("admin");
-        //    _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
-        //    _globalLocators.AdminLink.Click();
-        //    _globalHelpers.Wait.Until(d => _adminPage.SystemUsersDisplayToggleButton.Displayed);
-        //    Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
-        //    _adminHelpers.SearchForUserByUsername(_adminHelpers.GetTestUsername());
-        //    Assert.That(_adminHelpers
-        //        .GetRecordCount(), Is.AtLeast(1));
-        //}
-
         [Test]
         public void CanSearchForAndEditUsers()
         {

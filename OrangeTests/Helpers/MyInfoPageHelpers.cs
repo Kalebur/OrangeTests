@@ -32,7 +32,7 @@ namespace OrangeHRMTests.Helpers
 
         public void NavigateToPage()
         {
-            _globalHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin", true);
             _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
             _globalHelpers.ClickViaActions(_globalLocators.MyInfoLink);
             _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);

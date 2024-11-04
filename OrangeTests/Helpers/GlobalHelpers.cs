@@ -207,11 +207,6 @@ namespace OrangeHRMTests.Helpers
         {
             _loginHelpers.Logout();
         }
-
-        public string GetDisplayedUserName()
-        {
-            return _globalLocators.UserName.Text;
-        }
     }
 
 }
