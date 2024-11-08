@@ -25,13 +25,13 @@ namespace OrangeHRMTests.Tests
         public void HelpPage_ContainsExpectedLinks()
         {
             _globalHelpers.LoginAs("admin");
-            _globalHelpers.Wait.Until(_driver => _globalLocators.HelpButton.Displayed);
+            //_globalHelpers.Wait.Until(d => _globalLocators.HelpButton.Displayed);
             _globalLocators.HelpButton.Click();
 
             Assert.That(_driver.WindowHandles, Has.Count.EqualTo(2));
             _driver.SwitchTo().Window(_driver.WindowHandles[1]);
             Assert.That(_driver.CurrentWindowHandle, Is.EqualTo(_driver.WindowHandles[1]));
-            _globalHelpers.Wait.Until(_driver => _helpPage.SearchBar.Displayed);
+            _globalHelpers.Wait.Until(d => _helpPage.SearchBar.Displayed);
 
             if (_globalHelpers.GetWindowWidth() < 1000)
             {
