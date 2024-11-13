@@ -25,7 +25,7 @@ namespace OrangeHRMTests.Tests
         public void HelpPage_ContainsExpectedLinks()
         {
             _globalHelpers.LoginAs("admin");
-            //_globalHelpers.Wait.Until(d => _globalLocators.HelpButton.Displayed);
+            _globalHelpers.Wait.Until(d => _globalLocators.HelpButton.Displayed);
             _globalLocators.HelpButton.Click();
 
             Assert.That(_driver.WindowHandles, Has.Count.EqualTo(2));

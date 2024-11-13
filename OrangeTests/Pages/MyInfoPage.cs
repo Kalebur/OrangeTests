@@ -1,21 +1,34 @@
 ﻿using OpenQA.Selenium;
-using OrangeHRMTests.Locators;
+using OrangeHRMTests.Helpers;
 
-namespace OrangeHRMTests.Helpers
+namespace OrangeHRMTests.Locators
 {
-    public class MyInfoPageHelpers(IWebDriver driver, MyInfoPage myInfoPage, GlobalHelpers globalHelpers, GlobalLocators globalLocators)
+    public class MyInfoPage(IWebDriver driver, GlobalHelpers globalHelpers, GlobalLocators globalLocators)
     {
         private readonly IWebDriver _driver = driver;
-        private readonly MyInfoPage _myInfoPage = myInfoPage;
         private readonly GlobalHelpers _globalHelpers = globalHelpers;
         private readonly GlobalLocators _globalLocators = globalLocators;
+
+        public IWebElement PersonalDetailsTabButton => _driver.FindElement(By.XPath("//div[@role='tab']//a[contains(text(), 'Personal Details')]"));
+        public IWebElement FirstNameTextBox => _driver.FindElement(By.XPath("//input[contains(@class, 'orangehrm-firstname')]"));
+        public IWebElement MiddleNameTextBox => _driver.FindElement(By.XPath("//input[contains(@class, 'orangehrm-middlename')]"));
+        public IWebElement LastNameTextBox => _driver.FindElement(By.XPath("//input[contains(@class, 'orangehrm-lastname')]"));
+        public IWebElement SavePersonalDetailsButton => _driver.FindElement(By.XPath("//h6[text()='Personal Details']//following-sibling::form//button[@type='submit']"));
+        public IWebElement RecordCountSpan => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-attachment')]//hr[contains(@class, 'oxd-divider orangehrm-horizontal-margin')]//following-sibling::div//span"));
+        public IWebElement FileInput => _driver.FindElement(By.XPath("//input[@type='file']"));
+        public IWebElement ErrorMessageSpan => _driver.FindElement(By.XPath("//span[contains(@class, 'error-message')]"));
+        public IWebElement FilenameDiv => _driver.FindElement(By.XPath("//div[contains(@class, 'oxd-file-input-div')]"));
+        public IWebElement AddAttachmentButton => _driver.FindElement(By.XPath("//button//i[contains(@class, 'bi-plus')]//parent::button"));
+        public IList<IWebElement> Attachments => _driver.FindElements(By.XPath("//div[contains(@class, 'oxd-table-body')]/child::div[contains(@class, 'oxd-table-card')]"));
+        public IWebElement SaveAttachmentButton => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-attachment')]//button[@type='submit']"));
+        public IWebElement ResponsiveAttachmentFilename(IWebElement element) => element.FindElement(By.XPath(".//div[contains(@class, 'card-item card-header-slot-content --left')]//div[contains(@class, 'data')]"));
 
         public (IWebElement attachment, Dictionary<string, string>) GetAttachedFileData(string fileName)
         {
             Dictionary<string, string> attachmentData = null;
             IWebElement attachmentCard = null;
 
-            foreach (var attachment in _myInfoPage.Attachments)
+            foreach (var attachment in Attachments)
             {
                 _globalHelpers.ScrollTo(attachment);
                 var data = GetAttachmentDataFromRow(attachment);
@@ -35,14 +48,14 @@ namespace OrangeHRMTests.Helpers
             _globalHelpers.LoginAs("admin", true);
             _globalHelpers.Wait.Until(d => _globalLocators.MyInfoLink.Displayed);
             _globalHelpers.ClickViaActions(_globalLocators.MyInfoLink);
-            _globalHelpers.Wait.Until(d => _myInfoPage.PersonalDetailsTabButton.Displayed);
+            _globalHelpers.Wait.Until(d => PersonalDetailsTabButton.Displayed);
         }
 
         public void UploadFile(string filename)
         {
-            _globalHelpers.ClickViaActions(_myInfoPage.AddAttachmentButton);
-            _myInfoPage.FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", filename));
-            _globalHelpers.ClickViaActions(_myInfoPage.SaveAttachmentButton);
+            _globalHelpers.ClickViaActions(AddAttachmentButton);
+            FileInput.SendKeys(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestFiles", filename));
+            _globalHelpers.ClickViaActions(SaveAttachmentButton);
         }
 
         private Dictionary<string, string> GetAttachmentDataFromRow(IWebElement tableRow)
@@ -78,7 +91,7 @@ namespace OrangeHRMTests.Helpers
         {
             var attachmentData = new Dictionary<string, string>
             {
-                { "fileName", _myInfoPage.ResponsiveAttachmentFilename(tableRow).Text.Trim() }
+                { "fileName", ResponsiveAttachmentFilename(tableRow).Text.Trim() }
             };
             var dataFields = tableRow.FindElements(By.XPath(".//div[contains(@class, 'card-body-slot')]//div[@role='cell']//div[contains(@class, 'data')]"));
             if (dataFields.Count == 5)
@@ -99,5 +112,6 @@ namespace OrangeHRMTests.Helpers
 
             return attachmentData;
         }
+
     }
 }
