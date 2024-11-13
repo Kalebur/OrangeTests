@@ -12,7 +12,6 @@ namespace OrangeHRMTests.Tests
         private GlobalHelpers _globalHelpers;
         private GlobalLocators _globalLocators;
         private MyInfoPage _myInfoPage;
-        private MyInfoPageHelpers _myInfoPageHelpers;
 
         [SetUp]
         public void Setup()
@@ -20,8 +19,7 @@ namespace OrangeHRMTests.Tests
             _driver = new ChromeDriver();
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, new Random(), _globalLocators);
-            _myInfoPage = new MyInfoPage(_driver);
-            _myInfoPageHelpers = new MyInfoPageHelpers(_driver, _myInfoPage, _globalHelpers, _globalLocators);
+            _myInfoPage = new MyInfoPage(_driver, _globalHelpers, _globalLocators);
         }
 
         [TestCase("Trini", "", "Quan", "Trini Quan")]
@@ -29,7 +27,7 @@ namespace OrangeHRMTests.Tests
         [TestCase("Tommy", "", "Oliver", "Tommy Oliver")]
         public void CanEditOwnName(string firstName, string middleName, string lastName, string expectedName)
         {
-            _myInfoPageHelpers.NavigateToPage();
+            _myInfoPage.NavigateToPage();
 
             _myInfoPage.FirstNameTextBox.ClearViaSendKeys();
             _myInfoPage.FirstNameTextBox.SendKeys(firstName);
@@ -58,12 +56,12 @@ namespace OrangeHRMTests.Tests
             Dictionary<string, string> attachmentData;
             IWebElement attachmentCard;
 
-            _myInfoPageHelpers.NavigateToPage();
-            _myInfoPageHelpers.UploadFile(filename);
+            _myInfoPage.NavigateToPage();
+            _myInfoPage.UploadFile(filename);
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
 
-            (attachmentCard, attachmentData) = _myInfoPageHelpers.GetAttachedFileData(filename);
+            (attachmentCard, attachmentData) = _myInfoPage.GetAttachedFileData(filename);
             Assert.Multiple(() =>
             {
                 Assert.That(attachmentData, Is.Not.Null, "No attachment data was parsed.");
@@ -80,8 +78,8 @@ namespace OrangeHRMTests.Tests
         {
             var filename = "cake_2.png";
 
-            _myInfoPageHelpers.NavigateToPage();
-            _myInfoPageHelpers.UploadFile(filename);
+            _myInfoPage.NavigateToPage();
+            _myInfoPage.UploadFile(filename);
 
             Assert.Multiple(() =>
             {
