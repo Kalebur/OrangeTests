@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 
 namespace OrangeHRMTests.Locators
@@ -60,7 +61,7 @@ namespace OrangeHRMTests.Locators
 
         private Dictionary<string, string> GetAttachmentDataFromRow(IWebElement tableRow)
         {
-            var attachmentData = new Dictionary<string, string>();
+            Dictionary<string, string> attachmentData;
             if (_globalHelpers.GetWindowWidth() < 1000)
             {
                 attachmentData = GetResponsiveAttachmentData(tableRow);
@@ -111,6 +112,21 @@ namespace OrangeHRMTests.Locators
             }
 
             return attachmentData;
+        }
+
+        public void ClearNameFields()
+        {
+            FirstNameTextBox.ClearViaSendKeys();
+            MiddleNameTextBox.ClearViaSendKeys();
+            LastNameTextBox.ClearViaSendKeys();
+        }
+
+        public void FillNameFields(string firstName, string middleName = "", string lastName = "")
+        {
+            FirstNameTextBox.SendKeys(firstName);
+            MiddleNameTextBox.SendKeys(middleName);
+            LastNameTextBox.SendKeys(lastName);
+
         }
 
     }

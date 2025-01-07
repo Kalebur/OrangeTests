@@ -22,19 +22,13 @@ namespace OrangeHRMTests.Tests
             _myInfoPage = new MyInfoPage(_driver, _globalHelpers, _globalLocators);
         }
 
-        [TestCase("Trini", "", "Quan", "Trini Quan")]
-        [TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
         [TestCase("Tommy", "", "Oliver", "Tommy Oliver")]
+        [TestCase("Selena", "Ann", "Shepherd", "Selena Shepherd")]
         public void CanEditOwnName(string firstName, string middleName, string lastName, string expectedName)
         {
             _myInfoPage.NavigateToPage();
-
-            _myInfoPage.FirstNameTextBox.ClearViaSendKeys();
-            _myInfoPage.FirstNameTextBox.SendKeys(firstName);
-            _myInfoPage.MiddleNameTextBox.ClearViaSendKeys();
-            _myInfoPage.MiddleNameTextBox.SendKeys(middleName);
-            _myInfoPage.LastNameTextBox.ClearViaSendKeys();
-            _myInfoPage.LastNameTextBox.SendKeys(lastName);
+            _myInfoPage.ClearNameFields();
+            _myInfoPage.FillNameFields(firstName, middleName, lastName);
             _myInfoPage.LastNameTextBox.Submit();
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _driver.Navigate().Refresh();
@@ -58,7 +52,6 @@ namespace OrangeHRMTests.Tests
 
             _myInfoPage.NavigateToPage();
             _myInfoPage.UploadFile(filename);
-            //_globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
 
             (attachmentCard, attachmentData) = _myInfoPage.GetAttachedFileData(filename);
@@ -85,7 +78,8 @@ namespace OrangeHRMTests.Tests
             {
                 Assert.That(_myInfoPage.FilenameDiv.Displayed, Is.True);
                 Assert.That(_myInfoPage.ErrorMessageSpan.Displayed, Is.True);
-                Assert.That(_myInfoPage.ErrorMessageSpan.Text, Is.EqualTo("Attachment Size Exceeded"));
+                Assert.That(_myInfoPage.ErrorMessageSpan.Text,
+                                Is.EqualTo("Attachment Size Exceeded"));
             });
         }
 
