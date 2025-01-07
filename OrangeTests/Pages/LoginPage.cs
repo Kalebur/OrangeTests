@@ -1,6 +1,5 @@
 ﻿using OpenQA.Selenium;
 using OrangeHRMTests.Helpers;
-using OrangeHRMTests.Models;
 
 namespace OrangeHRMTests.Locators
 {

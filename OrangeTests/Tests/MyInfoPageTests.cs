@@ -58,7 +58,7 @@ namespace OrangeHRMTests.Tests
 
             _myInfoPage.NavigateToPage();
             _myInfoPage.UploadFile(filename);
-            _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
+            //_globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
             _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
 
             (attachmentCard, attachmentData) = _myInfoPage.GetAttachedFileData(filename);

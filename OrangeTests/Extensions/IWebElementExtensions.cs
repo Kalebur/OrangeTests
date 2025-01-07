@@ -1,7 +1,4 @@
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.UI;
-using System.Reflection;
 
 namespace OrangeHRMTests.Extensions
 {

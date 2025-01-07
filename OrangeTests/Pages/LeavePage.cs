@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
-using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Extensions;
+using OrangeHRMTests.Helpers;
 
 namespace OrangeHRMTests.Locators
 {
@@ -65,7 +65,7 @@ namespace OrangeHRMTests.Locators
         public List<IWebElement> RemoveStatusButtons => _driver.FindElements(By.XPath("//form//i[contains(@class, 'bi-x')]")).ToList();
         public IWebElement EmployeeNameInputField => _driver.FindElement(By.XPath("//label[contains(., 'Employee Name')]//parent::div//following-sibling::div//input"));
 
-        
+
 
         public void SelectRandomLeaveType()
         {

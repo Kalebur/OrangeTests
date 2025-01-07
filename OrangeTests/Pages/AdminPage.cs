@@ -1,9 +1,8 @@
 ﻿using OpenQA.Selenium;
+using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 using OrangeHRMTests.Models;
 using System.Text.RegularExpressions;
-using System;
-using OrangeHRMTests.Extensions;
 
 namespace OrangeHRMTests.Locators
 {
