@@ -45,7 +45,7 @@ namespace OrangeHRMTests.Tests
 
         [TestCase("TPS_Report1313.txt", "text/plain")]
         [TestCase("cake_1.jpg", "image/jpeg")]
-        public void CanUploadFile(string filename, string fileType)
+        public void CanUploadFile(string filename, string expectedFileType)
         {
             Dictionary<string, string> attachmentData;
             IWebElement attachmentCard;
@@ -60,8 +60,9 @@ namespace OrangeHRMTests.Tests
                 Assert.That(attachmentData, Is.Not.Null, "No attachment data was parsed.");
                 Assert.That(attachmentCard, Is.Not.Null);
                 Assert.That(attachmentData["addedBy"], Is.EqualTo("Admin"));
-                Assert.That(attachmentData["type"], Is.EqualTo(fileType));
-                Assert.That(attachmentData["dateAdded"], Is.EqualTo(DateTime.Now.ToString(_globalHelpers.dateFormatString)));
+                Assert.That(attachmentData["type"], Is.EqualTo(expectedFileType));
+                Assert.That(attachmentData["dateAdded"],
+                    Is.EqualTo(DateTime.Now.ToString(_globalHelpers.dateFormatString)));
             });
             _globalHelpers.DeleteRecord(attachmentCard);
         }

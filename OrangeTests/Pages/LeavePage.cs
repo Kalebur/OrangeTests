@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OrangeHRMTests.Extensions;
 using OrangeHRMTests.Helpers;
 
@@ -39,6 +40,13 @@ namespace OrangeHRMTests.Locators
         public IWebElement MyLeaveLink => _driver.FindElement(By.XPath("//nav//a[contains(text(), 'My Leave')]"));
         public IWebElement LeaveListLink => _driver.FindElement(By.XPath("//nav//a[contains(text(), 'Leave List')]"));
         public IWebElement ApplyButton => _driver.FindElement(By.XPath("//button[@type='submit']"));
+        public IWebElement ApplyLeaveHeader => _driver.FindElement(By.XPath("//h6[text()='Apply Leave']"));
+        public IWebElement LeaveEntitlementsHeader => _driver.FindElement(By.XPath("//h5[text()='Leave Entitlements']"));
+        public IWebElement ConfirmButton => _driver.FindElement(By.XPath("//button[contains(., 'Confirm')]"));
+        public IWebElement NoLeaveAvailableElement => _driver.FindElement(By.XPath("//div[contains(@class, 'orangehrm-card-container')]//p[text() = 'No Leave Types with Leave Balance']"));
+        public IWebElement EntitlementsLink => _driver.FindElement(By.XPath("//span[contains(text(), 'Entitlements')]//parent::li"));
+        public IWebElement AddEntitlementsLink => _driver.FindElement(By.XPath("//a[contains(text(), 'Add Entitlements')]"));
+        public IWebElement EntitlementValueField => _driver.FindElement(By.XPath("//label[contains(., 'Entitlement')]//parent::div//following-sibling::div//input"));
         public IWebElement LeaveBalanceField => _driver.FindElement(By.XPath("//p[contains(@class, 'orangehrm-leave-balance-text')]"));
         public IWebElement LeaveTypeSelectElement => _driver.FindElement(By.XPath("//label[contains(text(), 'Leave Type')]//parent::div//following-sibling::div"));
         public IList<IWebElement> LeaveTypeOptions => _driver.FindElements(By.XPath("//label[contains(text(), 'Leave Type')]//parent::div//following-sibling::div//div[contains(@class, 'oxd-select-dropdown')]//div")).Skip(1).ToList();
@@ -149,6 +157,10 @@ namespace OrangeHRMTests.Locators
         public void ApplyForLeave(DateTime startDate, DateTime endDate)
         {
             NavigateToLeavePage();
+            if (!LeaveAvailable())
+            {
+                AddLeaveBalance(30);
+            }
             SelectRandomLeaveType();
 
             // Select Start Date
@@ -170,6 +182,68 @@ namespace OrangeHRMTests.Locators
             _globalHelpers.Wait.Until(d => _globalLocators.SuccessAlert.Displayed);
         }
 
+        private bool LeaveAvailable()
+        {
+            bool leaveAvailable = true;
+            try
+            {
+                leaveAvailable = LeaveBalanceField.Displayed;
+            }
+            catch (Exception e)
+            {
+                leaveAvailable = false;
+            }
+
+            return leaveAvailable;
+        }
+
+        private void AddLeaveBalance(int days)
+        {
+            NavigateToAddEntitlementsPage();
+            AddEntitlementForAdmin(days);
+        }
+
+        private void NavigateToAddEntitlementsPage()
+        {
+            EntitlementsLink.Click();
+            _globalHelpers.Wait.Until(d => AddEntitlementsLink.Displayed);
+            AddEntitlementsLink.Click();
+            _globalHelpers.Wait.Until(d => EmployeeNameInputField.Displayed);
+        }
+
+        private void AddEntitlementForAdmin(int days)
+        {
+            var globals = new GlobalLocators(_driver);
+            var adminFirstName = globals.UserName.Text.Split(" ")[0];
+            SearchForEmployeeByName(adminFirstName);
+            SelectRandomLeaveType();
+            FillEntitlementValue(days);
+            SubmitForm();
+            _globalHelpers.Wait.Until(d => ConfirmButton.Displayed);
+            ConfirmButton.Click();
+            _globalHelpers.Wait.Until(d => LeaveEntitlementsHeader.Displayed);
+            ApplyLink.Click();
+            _globalHelpers.Wait.Until(d => ApplyLeaveHeader.Displayed);
+        }
+
+        private void SearchForEmployeeByName(string name)
+        {
+            EmployeeNameInputField.SendKeys(name);
+            Task.Delay(5000).Wait();
+            var actionManager = new Actions(_driver);
+            actionManager.SendKeys(Keys.ArrowDown);
+        }
+
+        private void FillEntitlementValue(int value)
+        {
+            EntitlementValueField.SendKeys(value.ToString());
+        }
+
+        private void SubmitForm()
+        {
+            ApplyButton.Click();
+        }
+
         private void NavigateToLeavePage()
         {
             _globalHelpers.LoginAs("admin", true);
@@ -177,7 +251,7 @@ namespace OrangeHRMTests.Locators
             _globalLocators.LeaveLink.Click();
             _globalHelpers.Wait.Until(d => ApplyLink.Displayed);
             ApplyLink.Click();
-            _globalHelpers.Wait.Until(d => ApplyButton.Displayed);
+            _globalHelpers.Wait.Until(d => ApplyLeaveHeader.Displayed);
         }
 
         public void AssertRecordExistsWithStatus(bool recordExists, IWebElement leaveRecord, string leaveStatus, string expectedStatus)

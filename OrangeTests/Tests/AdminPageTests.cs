@@ -53,7 +53,8 @@ namespace OrangeHRMTests.Tests
         public void CanAddUser()
         {
             _adminPage.NavigateToAdminPage();
-            Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
+            Assert.That(_globalLocators.AdminLink.GetAttribute("class"), 
+                Does.Contain("active"));
 
             _adminPage.AddUserButton.ClickViaJavaScript();
             _globalHelpers.Wait.Until(d => _adminPage.ConfirmPasswordTextBox.Displayed);
@@ -65,7 +66,8 @@ namespace OrangeHRMTests.Tests
             _globalHelpers.Wait.Until(_driver => _globalLocators.UserDropdown.Displayed);
             Assert.Multiple(() =>
             {
-                Assert.That(_globalLocators.DashboardLink.GetAttribute("class"), Does.Contain("active"));
+                Assert.That(_globalLocators.DashboardLink.GetAttribute("class"), 
+                    Does.Contain("active"));
                 Assert.That(_globalLocators.UserName.Text,
                     Is.EqualTo($"{newUser.Employee.FirstName} {newUser.Employee.LastName}"));
             });
