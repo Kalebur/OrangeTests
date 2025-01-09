@@ -72,8 +72,7 @@ namespace OrangeHRMTests.Locators
         public List<IWebElement> DropdownOptions => DropdownListBox.FindElements(By.XPath(".//div[@role='option']")).Skip(1).ToList();
         public List<IWebElement> RemoveStatusButtons => _driver.FindElements(By.XPath("//form//i[contains(@class, 'bi-x')]")).ToList();
         public IWebElement EmployeeNameInputField => _driver.FindElement(By.XPath("//label[contains(., 'Employee Name')]//parent::div//following-sibling::div//input"));
-
-
+        public IWebElement FirstAutoCompleteName => _driver.FindElement(By.XPath("//div[contains(@class, 'autocomplete-option')]/span"));
 
         public void SelectRandomLeaveType()
         {
@@ -214,8 +213,9 @@ namespace OrangeHRMTests.Locators
         private void AddEntitlementForAdmin(int days)
         {
             var globals = new GlobalLocators(_driver);
-            var adminFirstName = globals.UserName.Text.Split(" ")[0];
-            SearchForEmployeeByName(adminFirstName);
+            var adminName = globals.UserName.Text;
+            SearchForEmployeeByName(adminName);
+            SelectFirstEmployee();
             SelectRandomLeaveType();
             FillEntitlementValue(days);
             SubmitForm();
@@ -229,9 +229,15 @@ namespace OrangeHRMTests.Locators
         private void SearchForEmployeeByName(string name)
         {
             EmployeeNameInputField.SendKeys(name);
-            Task.Delay(5000).Wait();
+        }
+
+        private void SelectFirstEmployee()
+        {
             var actionManager = new Actions(_driver);
-            actionManager.SendKeys(Keys.ArrowDown);
+            _globalHelpers.Wait.Until(d => FirstAutoCompleteName.Displayed);
+            Console.WriteLine("Employee name found");
+            Console.WriteLine($"Employees Found: {DropdownOptions.Count}");
+            FirstAutoCompleteName.Click();
         }
 
         private void FillEntitlementValue(int value)
