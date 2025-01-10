@@ -42,6 +42,16 @@ namespace OrangeHRMTests.Locators
         public IWebElement FirstAutoCompleteName => _driver.FindElement(By.XPath("//div[contains(@class, 'autocomplete-option')]/span"));
         public IWebElement ConfigurationDropdownButton => _driver.FindElements(By.XPath("//span[@class='oxd-topbar-body-nav-tab-item']")).Last();
         public IWebElement ConfigurationDropdownList => _driver.FindElement(By.XPath("//span[@class='oxd-topbar-body-nav-tab-item']//following-sibling::ul"));
+        public IWebElement ConfigurationButton => HeaderButtonList.Last();
+        public IWebElement ConfigurationDropdown => ConfigurationButton.FindElement(By.TagName("ul"));
+        public IList<IWebElement> ConfigurationOptions => ConfigurationDropdown.FindElements(By.TagName("li"));
+        public IList<IWebElement> LocalizationLabels => _driver.FindElements(By.TagName("label"));
+        public IWebElement LanguageDropdownButton => LocalizationLabels[0].FindElement(By.XPath(".//parent::div//following-sibling::div"));
+        public IWebElement ListBox => _driver.FindElement(By.XPath("//div[@role='listbox']"));
+        public IList<IWebElement> ListBoxOptions => ListBox.FindElements(By.XPath(".//div[@role='option']"));
+        public IList<IWebElement> HeaderButtonList => _driver.FindElements(By.XPath("//header//nav//ul//li"));
+        public IWebElement Menu => _driver.FindElement(By.XPath("//ul[@role='menu']"));
+        public IList<IWebElement> MenuOptions => Menu.FindElements(By.TagName("li"));
 
         public IWebElement GetEditUserButton(IWebElement userRow)
         {
@@ -229,7 +239,7 @@ namespace OrangeHRMTests.Locators
 
         public void NavigateToAdminPage()
         {
-            _globalHelpers.LoginAs("admin");
+            _globalHelpers.LoginAs("admin", true);
             _globalHelpers.Wait.Until(d => _globalLocators.AdminLink.Displayed);
             _globalLocators.AdminLink.Click();
             _globalHelpers.Wait.Until(d => RecordCountSpan.Displayed);
@@ -245,6 +255,36 @@ namespace OrangeHRMTests.Locators
                 Assert.That(updatedUserData.UserRole, Is.EqualTo(testUserData.UserRole));
                 Assert.That(updatedUserData.IsEnabled, Is.EqualTo(testUserData.IsEnabled));
             });
+        }
+
+        public void SetSiteLanguage()
+        {
+            NavigateToAdminPage();
+            NavigateToLocalizationPage();
+            SelectEnglishLanguage();
+            ClickSubmitButton();
+            Task.Delay(5000).Wait();
+            _globalHelpers.Logout();
+        }
+
+        public void NavigateToLocalizationPage()
+        {
+            ConfigurationButton.Click();
+            _globalHelpers.Wait.Until(d => Menu.Displayed && MenuOptions.Count >= 3);
+            MenuOptions[2].Click();
+        }
+
+        private void SelectEnglishLanguage()
+        {
+            _globalHelpers.Wait.Until(d => LocalizationLabels.Count > 0);
+            LanguageDropdownButton.Click();
+            _globalHelpers.Wait.Until(d => ListBoxOptions.Count >= 4);
+            ListBoxOptions[3].Click();
+        }
+
+        private void ClickSubmitButton()
+        {
+            _globalLocators.SubmitButton.Click();
         }
     }
 }

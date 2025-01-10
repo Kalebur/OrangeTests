@@ -21,6 +21,7 @@ namespace OrangeHRMTests.Tests
             _globalLocators = new GlobalLocators(_driver);
             _globalHelpers = new GlobalHelpers(_driver, random, _globalLocators);
             _adminPage = new AdminPage(_driver, _globalHelpers, _globalLocators, random);
+            _globalHelpers.SetLanguageIfNotEnglish();
         }
 
         [Test]

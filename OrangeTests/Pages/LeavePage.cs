@@ -235,8 +235,6 @@ namespace OrangeHRMTests.Locators
         {
             var actionManager = new Actions(_driver);
             _globalHelpers.Wait.Until(d => FirstAutoCompleteName.Displayed);
-            Console.WriteLine("Employee name found");
-            Console.WriteLine($"Employees Found: {DropdownOptions.Count}");
             FirstAutoCompleteName.Click();
         }
 

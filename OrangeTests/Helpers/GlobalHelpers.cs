@@ -205,6 +205,19 @@ namespace OrangeHRMTests.Helpers
         {
             _loginPage.Logout();
         }
+
+        public void SetLanguageIfNotEnglish()
+        {
+            var admin = new AdminPage(_driver, this, _globalLocators, _random);
+            var login = new LoginPage(_driver, this, _globalLocators);
+            _driver.Navigate().GoToUrl("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+            Wait.Until(d => login.LoginButton.Displayed);
+            if (!(login.LoginButton.Text == "Login"))
+            {
+                admin.SetSiteLanguage();
+            }
+
+        }
     }
 
 }
