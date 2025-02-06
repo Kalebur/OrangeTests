@@ -128,6 +128,5 @@ namespace OrangeHRMTests.Locators
             LastNameTextBox.SendKeys(lastName);
 
         }
-
     }
 }

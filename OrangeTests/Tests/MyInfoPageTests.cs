@@ -48,23 +48,21 @@ namespace OrangeHRMTests.Tests
         [TestCase("cake_1.jpg", "image/jpeg")]
         public void CanUploadFile(string filename, string expectedFileType)
         {
-            // Arrange
-            Dictionary<string, string> attachmentData;
             IWebElement attachmentCard;
+            Dictionary<string, string> attachmentData;
             var current_date = DateTime.Now.ToString(_globalHelpers.dateFormatString);
+            var loggedInUser = "Admin";
 
-            // Act
             _myInfoPage.NavigateToPage();
             _myInfoPage.UploadFile(filename);
             _globalHelpers.Wait.Until(d => _myInfoPage.RecordCountSpan.Displayed);
             (attachmentCard, attachmentData) = _myInfoPage.GetAttachedFileData(filename);
 
-            //Assert
             Assert.Multiple(() =>
             {
                 Assert.That(attachmentData, Is.Not.Null, "No attachment data was parsed.");
                 Assert.That(attachmentCard, Is.Not.Null);
-                Assert.That(attachmentData["addedBy"], Is.EqualTo("Admin"));
+                Assert.That(attachmentData["addedBy"], Is.EqualTo(loggedInUser));
                 Assert.That(attachmentData["type"], Is.EqualTo(expectedFileType));
                 Assert.That(attachmentData["dateAdded"],
                     Is.EqualTo(current_date));
@@ -76,6 +74,7 @@ namespace OrangeHRMTests.Tests
         public void Negative_CannotUploadFileLargerThan1MB()
         {
             var filename = "cake_2.png";
+            var expectedErrorMessage = "Attachment Size Exceeded";
 
             _myInfoPage.NavigateToPage();
             _myInfoPage.UploadFile(filename);
@@ -85,7 +84,7 @@ namespace OrangeHRMTests.Tests
                 Assert.That(_myInfoPage.FilenameDiv.Displayed, Is.True);
                 Assert.That(_myInfoPage.ErrorMessageSpan.Displayed, Is.True);
                 Assert.That(_myInfoPage.ErrorMessageSpan.Text,
-                                Is.EqualTo("Attachment Size Exceeded"));
+                                Is.EqualTo(expectedErrorMessage));
             });
         }
 
