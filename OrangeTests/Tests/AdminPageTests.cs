@@ -27,19 +27,22 @@ namespace OrangeHRMTests.Tests
         [Test]
         public void CanSearchForAndEditUsers()
         {
+            var expectedRecordCountAfterDeletion = 0;
+            var expectedMatchingUserCount = 1;
+            var testUserData = _globalHelpers.GenerateRandomUser();
+
             _adminPage.NavigateToAdminPage();
             Assert.That(_globalLocators.AdminLink.GetAttribute("class"), Does.Contain("active"));
 
             var username = _adminPage.GetTestUsername();
             Assert.That(username, Is.Not.EqualTo("Admin"));
             _adminPage.SearchForUserByUsername(username);
-            Assert.That(_adminPage.GetRecordCount(), Is.EqualTo(1));
+            Assert.That(_adminPage.GetRecordCount(), Is.EqualTo(expectedMatchingUserCount));
 
             var currentUserData = _adminPage.ParseUserTableRow(_adminPage.Users.First());
-            var testUserData = _globalHelpers.GenerateRandomUser();
             _adminPage.EditUser(testUserData);
             _adminPage.SearchForUserByUsername(testUserData.Username);
-            Assert.That(_adminPage.GetRecordCount(), Is.EqualTo(1));
+            Assert.That(_adminPage.GetRecordCount(), Is.EqualTo(expectedMatchingUserCount));
 
             var updatedUserData = _adminPage.ParseUserTableRow(_adminPage.Users.First());
             _adminPage.AssertUpdateWasSuccessful(testUserData, updatedUserData);
@@ -47,7 +50,7 @@ namespace OrangeHRMTests.Tests
             _globalHelpers.DeleteRecord(_adminPage.Users.First());
             _adminPage.SearchButton.Click();
             _globalHelpers.Wait.Until(d => _globalLocators.RecordsTable.Displayed);
-            Assert.That(_adminPage.GetRecordCount(), Is.EqualTo(0));
+            Assert.That(_adminPage.GetRecordCount(), Is.EqualTo(expectedRecordCountAfterDeletion));
         }
 
         [Test]
